@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { CHANNELS, type Channel, type StreamSource } from "../data";
 import { parsePlaylist } from "../playlist";
-import { customColor, loadPlaylistStore, loadProxy, savePlaylistStore, saveProxy, type StoredPlaylist } from "./model";
+import { customColor, loadPlaylistStore, loadProxy, loadVolume, savePlaylistStore, saveProxy, saveVolume, type StoredPlaylist } from "./model";
 import {
   DEFAULT_CONFIG,
   LAYOUTS,
@@ -45,6 +45,9 @@ type LiveState = {
   setPlaying: React.Dispatch<React.SetStateAction<boolean>>;
   muted: boolean;
   setMuted: React.Dispatch<React.SetStateAction<boolean>>;
+  /** Master volume 0..1 — shared by the stage and the floating mini-player. */
+  volume: number;
+  setVolume: (v: number) => void;
   sourceIdxMap: Record<string, number>;
   setSourceIndex: (chId: string, idx: number) => void;
   miniDismissed: boolean;
@@ -223,6 +226,13 @@ export function LiveProvider({ children }: { children: ReactNode }) {
     setProxyState(on);
   }, []);
 
+  const [volume, setVolumeState] = useState<number>(() => loadVolume());
+  const setVolume = useCallback((v: number) => {
+    const clamped = Math.min(1, Math.max(0, v));
+    saveVolume(clamped);
+    setVolumeState(clamped);
+  }, []);
+
   const value = useMemo(
     () => ({
       config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav,
@@ -230,6 +240,7 @@ export function LiveProvider({ children }: { children: ReactNode }) {
       proxy, setProxy,
       playing, setPlaying,
       muted, setMuted,
+      volume, setVolume,
       sourceIdxMap, setSourceIndex,
       miniDismissed, setMiniDismissed,
       isScrolledOut, setScrolledOut,
@@ -238,7 +249,7 @@ export function LiveProvider({ children }: { children: ReactNode }) {
       config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav,
       channels, store, loadPlaylist, importText, loadXtream, removePlaylist,
       proxy, setProxy,
-      playing, muted, sourceIdxMap, setSourceIndex, miniDismissed, isScrolledOut,
+      playing, muted, volume, sourceIdxMap, setSourceIndex, miniDismissed, isScrolledOut,
     ],
   );
 

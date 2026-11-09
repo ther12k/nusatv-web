@@ -145,6 +145,7 @@ export type CatId = (typeof CATS)[number];
 
 const PLAYLIST_KEY = "nusatv.playlist.v1";
 const PROXY_KEY = "nusatv.proxy.v1";
+const VOLUME_KEY = "nusatv.volume.v1";
 
 export type StoredPlaylist = { url: string; addedAt: number; entries: { title: string; url: string; group: string }[] };
 
@@ -185,4 +186,19 @@ export function saveProxy(on: boolean): void {
     if (on) localStorage.setItem(PROXY_KEY, "1");
     else localStorage.removeItem(PROXY_KEY);
   } catch { /* private mode */ }
+}
+
+/** Master volume 0..1 — shared by the stage and the floating mini-player,
+ *  survives reloads. Clamped; default full. */
+export function loadVolume(): number {
+  try {
+    const raw = localStorage.getItem(VOLUME_KEY);
+    if (raw === null) return 1; // fresh visitor: full volume (Number(null) is 0!)
+    const v = Number(raw);
+    if (!Number.isFinite(v)) return 1;
+    return Math.min(1, Math.max(0, v));
+  } catch { return 1; }
+}
+export function saveVolume(v: number): void {
+  try { localStorage.setItem(VOLUME_KEY, String(Math.min(1, Math.max(0, v)))); } catch { /* private mode */ }
 }

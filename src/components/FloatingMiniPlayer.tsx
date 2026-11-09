@@ -20,6 +20,9 @@ type Props = {
   ch: Channel;
   playing: boolean;
   muted: boolean;
+  /** Master volume 0..1 (shared with the stage). */
+  volume: number;
+  onVolumeChange: (v: number) => void;
   proxy?: boolean;
   sourceIndex?: number;
   onTogglePlay: () => void;
@@ -32,6 +35,8 @@ export default function FloatingMiniPlayer({
   ch,
   playing,
   muted,
+  volume,
+  onVolumeChange,
   proxy = false,
   sourceIndex = 0,
   onTogglePlay,
@@ -85,9 +90,10 @@ export default function FloatingMiniPlayer({
     const video = videoRef.current;
     if (!video) return;
     video.muted = muted;
+    video.volume = volume;
     if (playing) void video.play().catch(() => {});
     else video.pause();
-  }, [playing, muted, activeUrl]);
+  }, [playing, muted, volume, activeUrl]);
 
   const togglePiP = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -199,8 +205,35 @@ export default function FloatingMiniPlayer({
               className="flex h-6 w-6 items-center justify-center rounded bg-black/60 text-white/80 hover:text-white backdrop-blur transition"
               aria-label={muted ? "Unmute" : "Mute"}
             >
-              {muted ? <VolumeX size={13} /> : <Volume2 size={13} />}
+              {muted || volume === 0 ? <VolumeX size={13} /> : <Volume2 size={13} />}
             </button>
+
+            {/* Volume slider — drag to set the level (shared with the main
+             *  stage and remembered across reloads). Sliding while muted
+             *  unmutes; zero reads as muted. */}
+            <div className="group/vol relative flex items-center">
+              <input
+                type="range"
+                min={0}
+                max={100}
+                step={1}
+                value={Math.round(volume * 100)}
+                onChange={(e) => {
+                  const v = Number(e.target.value) / 100;
+                  onVolumeChange(v);
+                  if (v > 0 && muted) onToggleMute(); // sliding up unmutes
+                }}
+                aria-label="Volume"
+                title={`Volume ${Math.round(volume * 100)}%`}
+                className="h-1 w-0 cursor-pointer appearance-none rounded-full bg-white/25 opacity-0 transition-all duration-200 group-hover/vol:w-16 group-hover/vol:opacity-100 focus-visible:w-16 focus-visible:opacity-100 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
+                style={{
+                  backgroundImage: `linear-gradient(to right, #0e6bff ${Math.round(volume * 100)}%, rgba(255,255,255,0.25) ${Math.round(volume * 100)}%)`,
+                }}
+              />
+              <span className="pointer-events-none absolute -top-4 right-0 hidden font-mono text-[9px] text-white/70 group-hover/vol:block">
+                {Math.round(volume * 100)}%
+              </span>
+            </div>
           </div>
         </div>
       </div>

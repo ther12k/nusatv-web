@@ -37,6 +37,8 @@ type Props = {
   /** Idle delay before the video chrome fades (0 = always visible).
    *  Pointer activity inside the video reveals it again. */
   hideDelayMs?: number;
+  /** Master volume 0..1 (shared with the floating mini-player). */
+  volume?: number;
   sourceIndex?: number;
   onSourceChange?: (index: number) => void;
 };
@@ -57,6 +59,7 @@ export default function PlayerStage({
   onNext,
   proxy = false,
   hideDelayMs = 5000,
+  volume = 1,
   sourceIndex = 0,
   onSourceChange,
 }: Props) {
@@ -238,9 +241,10 @@ export default function PlayerStage({
     const video = videoRef.current;
     if (!video) return;
     video.muted = muted;
+    video.volume = volume;
     if (playing) void video.play().catch(() => {/* autoplay block — poster shows */});
     else video.pause();
-  }, [playing, muted, activeUrl]);
+  }, [playing, muted, volume, activeUrl]);
 
   useEffect(() => {
     setTuning(true);

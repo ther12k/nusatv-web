@@ -18,7 +18,7 @@ function useNow(ms = 15000) {
 
 function Shell() {
   const now = useNow(15000);
-  const { config, channels, activeId, playing, setPlaying, muted, setMuted, proxy, sourceIdxMap, miniDismissed, setMiniDismissed, isScrolledOut } = useLive();
+  const { config, channels, activeId, playing, setPlaying, muted, setMuted, volume, setVolume, proxy, sourceIdxMap, miniDismissed, setMiniDismissed, isScrolledOut } = useLive();
   const [screen, setScreen] = useState<ScreenId>("live");
 
   const cinema = screen === "live" && config.layout === "cinema";
@@ -48,6 +48,8 @@ function Shell() {
           ch={channels.find((c) => c.id === activeId) ?? channels[0]!}
           playing={playing}
           muted={muted}
+          volume={volume}
+          onVolumeChange={setVolume}
           proxy={proxy}
           sourceIndex={sourceIdxMap[activeId] ?? 0}
           onTogglePlay={() => setPlaying((p) => !p)}

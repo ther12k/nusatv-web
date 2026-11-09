@@ -14,7 +14,7 @@ import LayoutPanel from "./live/LayoutPanel";
 type Props = { now: Date };
 
 export default function Live({ now }: Props) {
-  const { config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav, channels, proxy, playing, setPlaying, muted, setMuted, sourceIdxMap, setSourceIndex: setCtxSourceIdx, setMiniDismissed, setScrolledOut } = useLive();
+  const { config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav, channels, proxy, playing, setPlaying, muted, setMuted, volume, sourceIdxMap, setSourceIndex: setCtxSourceIdx, setMiniDismissed, setScrolledOut } = useLive();
   const [cat, setCat] = useState<string>("All");
   useEffect(() => {
     setMiniDismissed(false);
@@ -285,6 +285,7 @@ export default function Live({ now }: Props) {
     <PlayerStage
       proxy={proxy}
       hideDelayMs={config.chromeHideDelayMs}
+      volume={volume}
       ch={ch}
       sourceIndex={currentSourceIndex}
       onSourceChange={setSourceIndex}
