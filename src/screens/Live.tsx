@@ -315,7 +315,7 @@ export default function Live({ now }: Props) {
       {config.layout === "studio" && (
         <div
           className={cx(
-            "grid min-h-0 lg:h-[calc(100vh-2.75rem)]",
+            "grid min-h-0 grid-cols-1 lg:h-[calc(100vh-2.75rem)]",
             listFirst ? "lg:grid-cols-[minmax(280px,360px)_1fr]" : "lg:grid-cols-[1fr_minmax(280px,360px)]",
           )}
         >

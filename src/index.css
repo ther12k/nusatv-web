@@ -4,6 +4,9 @@
   --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 
+  /* extra-small phones get icon-only chrome; labels appear from 30rem */
+  --breakpoint-xs: 30rem;
+
   /* equipment black + broadcast signal blue */
   --color-ink: #08090b;
   --color-panel: #121417;
