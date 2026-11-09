@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { CHANNELS, type Channel } from "../data";
+import { CHANNELS, type Channel, type StreamSource } from "../data";
 import { parsePlaylist } from "../playlist";
 import { customColor, loadPlaylistStore, loadProxy, savePlaylistStore, saveProxy, type StoredPlaylist } from "./model";
 import {
@@ -43,20 +43,53 @@ type LiveState = {
 };
 
 function storedToChannels(p: StoredPlaylist): Channel[] {
-  return p.entries.slice(0, 2000).map((e, i) => ({
-    id: `x${100 + i}`,
-    num: 100 + i,
-    name: e.title.slice(0, 48),
-    abbr: (e.title.replace(/[^A-Za-z0-9 ]/g, "").trim().split(/\s+/)[0] ?? "CH").slice(0, 6).toUpperCase(),
-    bg: customColor(e.title + e.url),
-    fg: "#ffffff",
-    cat: e.group?.trim() || "My Playlist",
-    pool: "live",
-    hd: true,
-    now: "Live broadcast",
-    next: "Programme follows",
-    prog: 50,
-    src: e.url,
+  const map = new Map<string, { channel: Channel; sources: StreamSource[] }>();
+  let nextNum = 100;
+
+  for (const e of p.entries.slice(0, 2000)) {
+    const rawTitle = e.title.trim();
+    // Normalize key: remove parens like (Alt ...), (DensTV), (Flashcon), etc.
+    const cleanKey = rawTitle
+      .replace(/\(.*?\)/g, "")
+      .replace(/\b(HD|FHD|SD|4K|720p|1080p|Web|Stream|Channel)\b/gi, "")
+      .replace(/[^a-zA-Z0-9]/g, "")
+      .toLowerCase();
+
+    const tagMatch = /\((.*?)\)/.exec(rawTitle);
+    const sourceLabel = tagMatch ? tagMatch[1].trim().slice(0, 20) : "";
+
+    const existing = cleanKey.length >= 3 ? map.get(cleanKey) : undefined;
+    if (existing) {
+      const idx = existing.sources.length + 1;
+      existing.sources.push({
+        label: sourceLabel ? sourceLabel : `Server ${idx}`,
+        url: e.url,
+      });
+    } else {
+      const ch: Channel = {
+        id: `x${nextNum}`,
+        num: nextNum,
+        name: rawTitle.slice(0, 48),
+        abbr: (rawTitle.replace(/[^A-Za-z0-9 ]/g, "").trim().split(/\s+/)[0] ?? "CH").slice(0, 6).toUpperCase(),
+        bg: customColor(rawTitle + e.url),
+        fg: "#ffffff",
+        cat: e.group?.trim() || "My Playlist",
+        pool: "live",
+        hd: true,
+        now: "Live broadcast",
+        next: "Programme follows",
+        prog: 50,
+        src: e.url,
+        sources: [{ label: sourceLabel ? sourceLabel : "Server 1", url: e.url }],
+      };
+      map.set(cleanKey.length >= 3 ? cleanKey : `id_${nextNum}`, { channel: ch, sources: ch.sources! });
+      nextNum++;
+    }
+  }
+
+  return Array.from(map.values()).map(({ channel, sources }) => ({
+    ...channel,
+    sources: sources.length > 1 ? sources : undefined,
   }));
 }
 

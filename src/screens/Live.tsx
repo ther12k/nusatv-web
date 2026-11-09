@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { List, Pause, Settings2, SkipForward } from "lucide-react";
+import { List, Pause, Radio, Settings2, SkipForward } from "lucide-react";
 import { CHANNELS, hhmm, type Channel } from "../data";
 import { useLive } from "../live/LiveContext";
 import { CATS, LAYOUTS, type LayoutId } from "../live/model";
@@ -18,6 +18,13 @@ export default function Live({ now }: Props) {
   const [query, setQuery] = useState("");
   const [muted, setMuted] = useState(false);
   const [playing, setPlaying] = useState(true);
+  const [sourceIdxMap, setSourceIdxMap] = useState<Record<string, number>>({});
+
+  const flash = useCallback((msg: string) => {
+    setToast(msg);
+    if (toastTimer.current) window.clearTimeout(toastTimer.current);
+    toastTimer.current = window.setTimeout(() => setToast(null), 1600);
+  }, []);
   const [panel, setPanel] = useState(false);
   const [listOpen, setListOpen] = useState(false);
   const [zap, setZap] = useState("");
@@ -46,13 +53,22 @@ export default function Live({ now }: Props) {
 
   const cats = [...CATS, ...[...new Set(channels.map((c) => c.cat))].filter((g) => !(CATS as readonly string[]).includes(g))];
   const ch = channels.find((c) => c.id === activeId) ?? channels[0];
+  const sources = ch.sources && ch.sources.length > 0 ? ch.sources : [{ label: "Server 1", url: ch.src }];
+  const currentSourceIndex = sourceIdxMap[ch.id] ?? 0;
+
+  const setSourceIndex = useCallback((idx: number) => {
+    setSourceIdxMap((prev) => ({ ...prev, [ch.id]: idx }));
+    flash(`⚡ ${ch.name} · ${sources[idx]?.label ?? `Server ${idx + 1}`}`);
+  }, [ch.id, ch.name, sources, flash]);
+
+  const nextSource = useCallback(() => {
+    if (sources.length <= 1) return;
+    const next = (currentSourceIndex + 1) % sources.length;
+    setSourceIndex(next);
+  }, [sources.length, currentSourceIndex, setSourceIndex]);
   const idx = Math.max(0, list.findIndex((c) => c.id === ch.id));
 
-  const flash = useCallback((msg: string) => {
-    setToast(msg);
-    if (toastTimer.current) window.clearTimeout(toastTimer.current);
-    toastTimer.current = window.setTimeout(() => setToast(null), 1600);
-  }, []);
+
 
   const select = useCallback(
     (id: string) => {
@@ -186,6 +202,9 @@ export default function Live({ now }: Props) {
       } else if (e.key === "ArrowUp" || e.key === "PageUp" || e.key === "ArrowLeft") {
         e.preventDefault();
         step(-1);
+      } else if (e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        nextSource();
       } else if (e.key.toLowerCase() === "m") {
         document.querySelectorAll("video").forEach((v) => {
           v.muted = !v.muted;
@@ -206,7 +225,7 @@ export default function Live({ now }: Props) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [applyLayout, commitZap, step, zap, panel, listOpen, ch.id, favs, toggleFav, flash, cinema]);
+  }, [applyLayout, commitZap, step, zap, panel, listOpen, ch.id, favs, toggleFav, flash, cinema, nextSource]);
 
   const countLabel = `${list.length} CH`;
 
@@ -232,6 +251,8 @@ export default function Live({ now }: Props) {
     <PlayerStage
       proxy={proxy}
       ch={ch}
+      sourceIndex={currentSourceIndex}
+      onSourceChange={setSourceIndex}
       now={now}
       muted={muted}
       playing={playing}
@@ -362,6 +383,28 @@ export default function Live({ now }: Props) {
             >
               Exit cinema
             </button>
+            {sources.length > 1 && (
+              <div className="flex items-center gap-1 rounded-md bg-ink/80 p-1 ring-1 ring-white/15 backdrop-blur">
+                <span className="flex items-center gap-1 px-1.5 font-mono text-[10px] text-mute">
+                  <Radio size={12} className="text-signal-lt" /> SVR:
+                </span>
+                {sources.map((s, idx) => (
+                  <button
+                    key={s.url + idx}
+                    onClick={() => setSourceIndex(idx)}
+                    className={cx(
+                      "rounded px-2.5 py-1 font-mono text-[10.5px] font-bold tracking-wider transition",
+                      idx === currentSourceIndex
+                        ? "bg-signal text-white shadow-sm"
+                        : "text-white/70 hover:bg-white/10 hover:text-white",
+                    )}
+                    title={`Switch stream to ${s.label}`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {listOpen && (

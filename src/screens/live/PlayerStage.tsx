@@ -29,6 +29,8 @@ type Props = {
   onNext?: () => void;
   /** Route through this host's /stream relay (non-CORS hosts). */
   proxy?: boolean;
+  sourceIndex?: number;
+  onSourceChange?: (index: number) => void;
 };
 
 export default function PlayerStage({
@@ -46,11 +48,20 @@ export default function PlayerStage({
   onPrev,
   onNext,
   proxy = false,
+  sourceIndex = 0,
+  onSourceChange,
 }: Props) {
   const [tuning, setTuning] = useState(false);
   const [chrome, setChrome] = useState(true);
   const sig = signalFor(ch);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const sources = ch.sources && ch.sources.length > 0
+    ? ch.sources
+    : [{ label: "Server 1", url: ch.src }];
+  const safeSourceIndex = Math.min(Math.max(0, sourceIndex), sources.length - 1);
+  const activeSource = sources[safeSourceIndex] ?? sources[0]!;
+  const activeUrl = activeSource.url;
 
   // REAL playback: hls.js attaches the broadcaster's own HLS endpoint
   // to the video element behind the design's chrome. Muted autoplay
@@ -60,19 +71,24 @@ export default function PlayerStage({
     if (!video) return;
     const hls = new Hls({ autoStartLoad: true });
     const source =
-      proxy && !ch.src.startsWith("/")
-        ? `/stream?url=${encodeURIComponent(ch.src)}`
-        : ch.src;
+      proxy && !activeUrl.startsWith("/")
+        ? `/stream?url=${encodeURIComponent(activeUrl)}`
+        : activeUrl;
     hls.loadSource(source);
     hls.attachMedia(video);
     hls.on(Hls.Events.ERROR, (_e, data) => {
       if (!data.fatal) return;
-      video.setAttribute("data-hls-error", data.details);
+      if (sources.length > 1 && onSourceChange) {
+        console.warn(`HLS error on ${activeSource.label}, auto-switching server...`);
+        onSourceChange((safeSourceIndex + 1) % sources.length);
+      } else {
+        video.setAttribute("data-hls-error", data.details);
+      }
     });
     return () => {
       hls.destroy();
     };
-  }, [ch.src, proxy]);
+  }, [activeUrl, proxy, safeSourceIndex, sources.length, onSourceChange]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -80,7 +96,7 @@ export default function PlayerStage({
     video.muted = muted;
     if (playing) void video.play().catch(() => {/* autoplay block — poster shows */});
     else video.pause();
-  }, [playing, muted, ch.src]);
+  }, [playing, muted, activeUrl]);
 
   useEffect(() => {
     setTuning(true);
@@ -138,6 +154,28 @@ export default function PlayerStage({
           <span className="rounded-sm bg-ink/75 px-1.5 py-1 font-mono text-[9px] tracking-wider text-white/80 backdrop-blur">
             {ch.pool === "sport" || ch.pool === "film" ? "4K HDR" : "HD"}
           </span>
+        )}
+        {sources.length > 1 && (
+          <div className="flex items-center gap-1 rounded bg-ink/85 p-0.5 ring-1 ring-white/20 backdrop-blur">
+            {sources.map((s, idx) => (
+              <button
+                key={s.url + idx}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSourceChange?.(idx);
+                }}
+                className={cx(
+                  "rounded px-2 py-0.5 font-mono text-[9.5px] font-bold tracking-wider transition",
+                  idx === safeSourceIndex
+                    ? "bg-signal text-white shadow-sm"
+                    : "text-white/70 hover:bg-white/15 hover:text-white"
+                )}
+                title={`Switch to ${s.label}`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
         )}
       </div>
 
@@ -228,6 +266,16 @@ export default function PlayerStage({
           {onNext && (
             <button onClick={onNext} className="hidden text-white/80 hover:text-signal-lt sm:block" aria-label="Next channel">
               <SkipForward size={16} />
+            </button>
+          )}
+          {sources.length > 1 && onSourceChange && (
+            <button
+              onClick={() => onSourceChange((safeSourceIndex + 1) % sources.length)}
+              className="hidden items-center gap-1 rounded bg-white/10 px-2 py-1 font-mono text-[10px] text-white/90 ring-1 ring-white/20 transition hover:bg-signal hover:text-white sm:flex"
+              title={`Current server: ${activeSource.label} (Press 'S' to cycle)`}
+            >
+              <Radio size={12} className="text-signal-lt" />
+              <span>{activeSource.label}</span>
             </button>
           )}
           <button className="hidden text-white/80 hover:text-signal-lt sm:block" aria-label="Captions">

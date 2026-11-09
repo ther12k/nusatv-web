@@ -215,7 +215,7 @@ export default function Settings() {
       rows: [
         {
           label: "Remote control keys",
-          hint: "↑ ↓ → ← change channel · Enter toggles Cinema (fullscreen) · numbers jump to a channel · Backspace goes back · M sound · L channel list · C this config · Alt+1…4 layouts. On TV browsers the remote's D-pad sends the arrow keys.",
+          hint: "↑ ↓ → ← change channel · S switch stream server/mirror · Enter toggles Cinema (fullscreen) · numbers jump to channel · Backspace goes back · M sound · L channel list · C layout config · Alt+1…4 layouts. On TV browsers the remote's D-pad sends the arrow keys.",
           control: <Check size={15} className="text-signal-lt" />,
         },
       ],

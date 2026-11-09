@@ -152,6 +152,11 @@ export const TOP10 = [
 
 /* ---------------------------------------------------------------- channels */
 
+export type StreamSource = {
+  label: string;
+  url: string;
+};
+
 export type Channel = {
   id: string;
   num: number;
@@ -167,21 +172,42 @@ export type Channel = {
   prog: number;
   /** The broadcaster's own public HLS endpoint (all CORS-open). */
   src: string;
+  sources?: StreamSource[];
 };
 
 export const CHANNELS: Channel[] = [
   // Curated Indonesian national & regional streams + verified international feeds.
-  { id: "metrotv", num: 1, name: "Metro TV HD", abbr: "METRO", bg: "#0F2850", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://edge.medcom.id/live-edge/smil:metro.smil/playlist.m3u8" },
-  { id: "cnnid", num: 2, name: "CNN Indonesia", abbr: "CNN", bg: "#CC0000", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://video.detik.com/livecnn/smil:cnntv/chunklist_w268557525_b384000_sleng.m3u8" },
-  { id: "cnbcid", num: 3, name: "CNBC Indonesia", abbr: "CNBC", bg: "#002B49", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://video.detik.com/livecnbc/smil:cnbctv/chunklist_w1279679883_b384000_sleng.m3u8" },
-  { id: "inews", num: 4, name: "iNews HD", abbr: "INEWS", bg: "#B01111", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://live.i-news.tv/hls/stream.m3u8" },
+  { id: "metrotv", num: 1, name: "Metro TV HD", abbr: "METRO", bg: "#0F2850", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://edge.medcom.id/live-edge/smil:metro.smil/playlist.m3u8",
+    sources: [
+      { label: "Server 1 (Medcom HD)", url: "https://edge.medcom.id/live-edge/smil:metro.smil/playlist.m3u8" },
+      { label: "Server 2 (DensTV Flashcon)", url: "http://op-flashcon-digdayahd-1.dens.tv/h/h12/01.m3u8" }
+    ] },
+  { id: "cnnid", num: 2, name: "CNN Indonesia", abbr: "CNN", bg: "#CC0000", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://video.detik.com/livecnn/smil:cnntv/chunklist_w268557525_b384000_sleng.m3u8",
+    sources: [
+      { label: "Server 1 (Detik Edge)", url: "https://video.detik.com/livecnn/smil:cnntv/chunklist_w268557525_b384000_sleng.m3u8" },
+      { label: "Server 2 (Detik Master)", url: "https://video.detik.com/livecnn/smil:cnntv/playlist.m3u8" }
+    ] },
+  { id: "cnbcid", num: 3, name: "CNBC Indonesia", abbr: "CNBC", bg: "#002B49", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://video.detik.com/livecnbc/smil:cnbctv/chunklist_w1279679883_b384000_sleng.m3u8",
+    sources: [
+      { label: "Server 1 (Detik Edge)", url: "https://video.detik.com/livecnbc/smil:cnbctv/chunklist_w1279679883_b384000_sleng.m3u8" },
+      { label: "Server 2 (Detik Master)", url: "https://video.detik.com/livecnbc/smil:cnbctv/playlist.m3u8" }
+    ] },
+  { id: "inews", num: 4, name: "iNews HD", abbr: "INEWS", bg: "#B01111", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://live.i-news.tv/hls/stream.m3u8",
+    sources: [
+      { label: "Server 1 (Official)", url: "https://live.i-news.tv/hls/stream.m3u8" },
+      { label: "Server 2 (Stream 1)", url: "https://live.i-news.tv/hls/1/stream.m3u8" }
+    ] },
   { id: "rtv", num: 5, name: "RTV", abbr: "RTV", bg: "#551A8B", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://rtvstream.rtv.co.id:4555/hls/rtv.m3u8" },
   { id: "ntv", num: 6, name: "Nusantara TV", abbr: "NTV", bg: "#1E6FEB", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://nusantaratv.siar.us/nusantaratv/live/playlist.m3u8" },
   { id: "daai", num: 7, name: "DAAI TV", abbr: "DAAI", bg: "#008080", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://pull.daaiplus.com/live-DAAIPLUS/live-DAAIPLUS_HD.m3u8" },
   { id: "magna", num: 8, name: "MAGNA Channel", abbr: "MAGNA", bg: "#4A148C", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://edge.medcom.id/live-edge/smil:magna.smil/chunklist_w521170343_b1128000_sleng.m3u8" },
   { id: "bnch", num: 9, name: "BN Channel", abbr: "BN", bg: "#004D40", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://flv.intechmedia.net/live/ch112.m3u8" },
   { id: "tvriworld", num: 10, name: "TVRI World", abbr: "WORLD", bg: "#0D47A1", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://ott-balancer.tvri.go.id/live/eds/TVRIWorld/hls/TVRIWorld.m3u8" },
-  { id: "tv9", num: 11, name: "TV9 Nusantara", abbr: "TV9", bg: "#1B5E20", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://5bf7b725107e5.streamlock.net/tv9/tv9/playlist.m3u8" },
+  { id: "tv9", num: 11, name: "TV9 Nusantara", abbr: "TV9", bg: "#1B5E20", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://5bf7b725107e5.streamlock.net/tv9/tv9/playlist.m3u8",
+    sources: [
+      { label: "Server 1 (Streamlock)", url: "https://5bf7b725107e5.streamlock.net/tv9/tv9/playlist.m3u8" },
+      { label: "Server 2 (Intechmedia)", url: "http://122.248.43.242:1935/TV9/_definst_/myStream/playlist.m3u8" }
+    ] },
   { id: "jawapos", num: 12, name: "Jawa Pos TV", abbr: "JP TV", bg: "#E65100", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "http://122.248.43.242:1935/JAWAPOSTVJKT/_definst_/myStream/playlist.m3u8" },
   { id: "bandungtv", num: 13, name: "Bandung TV", abbr: "BDG", bg: "#37474F", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "http://202.150.153.254:65500/bandungtvWEBSITE.m3u8" },
   { id: "dw", num: 14, name: "DW English", abbr: "DW", bg: "#1F2A44", fg: "#ffffff", cat: "Internasional", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8" },
@@ -190,8 +216,16 @@ export const CHANNELS: Channel[] = [
   { id: "dwde", num: 17, name: "DW Deutsch", abbr: "DW DE", bg: "#3A2A1F", fg: "#ffffff", cat: "Internasional", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://dwamdstream101.akamaized.net/hls/live/2015524/dwstream101/index.m3u8" },
   { id: "f24fr", num: 18, name: "France 24 Français", abbr: "F24 FR", bg: "#2E1A2E", fg: "#ffffff", cat: "Internasional", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://static.france24.com/live/F24_FR_LO_HLS/live_web.m3u8" },
   { id: "f24es", num: 19, name: "France 24 Español", abbr: "F24 ES", bg: "#1A2E2E", fg: "#ffffff", cat: "Internasional", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://static.france24.com/live/F24_ES_LO_HLS/live_web.m3u8" },
-  { id: "nasa", num: 20, name: "NASA TV Public", abbr: "NASA", bg: "#0B3D91", fg: "#ffffff", cat: "Sains", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8" },
-  { id: "rbt", num: 21, name: "Red Bull TV", abbr: "RBT", bg: "#123B7A", fg: "#ffffff", cat: "Olahraga", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8" },
+  { id: "nasa", num: 20, name: "NASA TV Public", abbr: "NASA", bg: "#0B3D91", fg: "#ffffff", cat: "Sains", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8",
+    sources: [
+      { label: "Server 1 (Master)", url: "https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8" },
+      { label: "Server 2 (2000k)", url: "https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master_2000.m3u8" }
+    ] },
+  { id: "rbt", num: 21, name: "Red Bull TV", abbr: "RBT", bg: "#123B7A", fg: "#ffffff", cat: "Olahraga", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8",
+    sources: [
+      { label: "Server 1 (BoRB-AT)", url: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8" },
+      { label: "Server 2 (BoRB-US)", url: "https://rbmn-live.akamaized.net/hls/live/622817/BoRB-US/master_928.m3u8" }
+    ] },
   { id: "tvri_nasional", num: 22, name: "TVRI Nasional", abbr: "TVRI", bg: "#1E6FEB", fg: "#ffffff", cat: "TVRI", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://ott-balancer.tvri.go.id/live/eds/Nasional/hls/Nasional.m3u8" },
   { id: "tvri_dki", num: 23, name: "TVRI DKI Jakarta", abbr: "TVRI", bg: "#1E6FEB", fg: "#ffffff", cat: "TVRI", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://ott-balancer.tvri.go.id/live/eds/DKI/hls/DKI.m3u8" },
   { id: "tvri_jabar", num: 24, name: "TVRI Jawa Barat", abbr: "TVRI", bg: "#1E6FEB", fg: "#ffffff", cat: "TVRI", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://ott-balancer.tvri.go.id/live/eds/Jabar/hls/Jabar.m3u8" },
