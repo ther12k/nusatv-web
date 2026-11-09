@@ -53,13 +53,27 @@ export default function FloatingMiniPlayer({
   const activeSource = sources[safeSourceIndex] ?? sources[0]!;
   const activeUrl = activeSource.url;
 
-  // Stream playback — no-CORS / plain-http sources route through /stream.
+  // Stream playback — HLS or direct MP4/VOD
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     setStreamLive(false);
+
+    const targetUrl = playUrl(activeUrl, { proxy, relay: activeSource.relay ?? false });
+    const isDirectVideo = /\.(mp4|webm|m4v|mov|ogg)(\?|$)/i.test(activeUrl);
+
+    if (isDirectVideo) {
+      video.src = targetUrl;
+      const onLoaded = () => setStreamLive(true);
+      video.addEventListener("loadeddata", onLoaded);
+      return () => {
+        video.removeEventListener("loadeddata", onLoaded);
+        video.removeAttribute("src");
+      };
+    }
+
     const hls = new Hls({ autoStartLoad: true });
-    hls.loadSource(playUrl(activeUrl, { proxy, relay: activeSource.relay ?? false }));
+    hls.loadSource(targetUrl);
     hls.attachMedia(video);
     hls.on(Hls.Events.FRAG_LOADED, () => setStreamLive(true));
     return () => {

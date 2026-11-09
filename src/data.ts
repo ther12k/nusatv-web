@@ -196,7 +196,7 @@ export const CHANNELS: Channel[] = [
       { label: "Server 1 (Detik Edge)", url: "https://video.detik.com/livecnbc/smil:cnbctv/chunklist_w1279679883_b384000_sleng.m3u8" },
       { label: "Server 2 (Detik Master)", url: "https://video.detik.com/livecnbc/smil:cnbctv/playlist.m3u8" }
     ] },
-  { id: "inews", num: 4, name: "iNews HD", abbr: "INEWS", bg: "#B01111", fg: "#ffffff", cat: "Indonesia", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://live.i-news.tv/hls/stream.m3u8",
+  { id: "inews", num: 4, name: "iNews (Irak)", abbr: "INEWS", bg: "#B01111", fg: "#ffffff", cat: "Internasional", pool: "live", hd: true, now: "Live broadcast", next: "Programme follows", prog: 50, src: "https://live.i-news.tv/hls/stream.m3u8",
     sources: [
       { label: "Server 1 (Official)", url: "https://live.i-news.tv/hls/stream.m3u8" },
       { label: "Server 2 (Stream 1)", url: "https://live.i-news.tv/hls/1/stream.m3u8" }

@@ -178,17 +178,37 @@ export default function PlayerStage({
   const exhaustedRef = useRef(false);
 
   // REAL playback: hls.js attaches the broadcaster's own HLS endpoint
-  // to the video element behind the design's chrome. Muted autoplay
-  // (browser policy); the mute button unmutes with a user gesture.
-  // playUrl() auto-routes no-CORS / plain-http sources through /stream.
+  // (or direct MP4/video for VOD) to the video element.
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     exhaustedRef.current = false;
     setStreamLive(false);
     setStreamError(null);
+
+    const targetUrl = playUrl(activeUrl, { proxy, relay: activeRelay });
+    const isDirectVideo = /\.(mp4|webm|m4v|mov|ogg)(\?|$)/i.test(activeUrl);
+
+    if (isDirectVideo) {
+      video.src = targetUrl;
+      const onLoaded = () => {
+        setStreamLive(true);
+        setStreamError(null);
+      };
+      const onErr = () => {
+        setStreamError("Failed to load VOD media");
+      };
+      video.addEventListener("loadeddata", onLoaded);
+      video.addEventListener("error", onErr);
+      return () => {
+        video.removeEventListener("loadeddata", onLoaded);
+        video.removeEventListener("error", onErr);
+        video.removeAttribute("src");
+      };
+    }
+
     const hls = new Hls({ autoStartLoad: true });
-    hls.loadSource(playUrl(activeUrl, { proxy, relay: activeRelay }));
+    hls.loadSource(targetUrl);
     hls.attachMedia(video);
     hls.on(Hls.Events.FRAG_LOADED, () => {
       exhaustedRef.current = false;

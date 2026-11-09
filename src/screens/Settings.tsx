@@ -13,6 +13,8 @@ const PRESETS: { label: string; url: string }[] = [
   { label: "IPTV-org Indonesia", url: "https://iptv-org.github.io/iptv/countries/id.m3u" },
   { label: "DhanyTV (~890 Ch)", url: "https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv.m3u" },
   { label: "MGI24 Indonesia (128 Ch)", url: "https://mgi24.github.io/tvdigital/idwork.m3u" },
+  { label: "Public Domain Movies (VOD)", url: "https://raw.githubusercontent.com/OnlineM3U/publicdomainm3u/main/movies.m3u" },
+  { label: "Classic Series (VOD)", url: "https://raw.githubusercontent.com/OnlineM3U/publicdomainm3u/main/series.m3u" },
   { label: "RiotRyulianto ID", url: "https://raw.githubusercontent.com/riotryulianto/iptv-playlists/main/playlist.m3u" },
   { label: "Free-TV Global (~2k Ch)", url: "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8" },
 ];
