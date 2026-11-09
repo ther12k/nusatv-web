@@ -3,6 +3,7 @@ import {
   ChevronDown,
   ChevronsDownUp,
   ChevronsUpDown,
+  Eye,
   Film,
   Globe,
   Landmark,
@@ -33,6 +34,9 @@ type Props = {
   density: "comfortable" | "compact";
   showNumbers: boolean;
   countLabel: string;
+  /** Hide channels the server probe marked offline. */
+  hideOffline: boolean;
+  onToggleHideOffline: () => void;
   onCat: (c: string) => void;
   onQuery: (q: string) => void;
   onSelect: (id: string) => void;
@@ -65,6 +69,8 @@ export default function ChannelList({
   density,
   showNumbers,
   countLabel,
+  hideOffline,
+  onToggleHideOffline,
   onCat,
   onQuery,
   onSelect,
@@ -194,24 +200,41 @@ export default function ChannelList({
               <Activity size={10} className="text-emerald-400 animate-pulse" /> {countLabel}
             </span>
           </div>
-          <button
-            onClick={toggleAll}
-            title={allExpanded ? "Collapse all categories" : "Expand all categories"}
-            aria-label={allExpanded ? "Collapse all categories" : "Expand all categories"}
-            className="flex items-center gap-1 rounded bg-raised px-2 py-0.5 font-mono text-[9.5px] text-mute ring-1 ring-line transition hover:bg-panel hover:text-fg"
-          >
-            {allExpanded ? (
-              <>
-                <ChevronsDownUp size={11} className="text-signal-lt" />
-                <span className="hidden xs:inline">Collapse</span>
-              </>
-            ) : (
-              <>
-                <ChevronsUpDown size={11} className="text-signal-lt" />
-                <span className="hidden xs:inline">Expand</span>
-              </>
-            )}
-          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={onToggleHideOffline}
+              title={hideOffline ? "Showing online channels only — tap to show all" : "Hide channels the server probe marked offline"}
+              aria-label="Toggle online-only filter"
+              aria-pressed={hideOffline}
+              className={cx(
+                "flex items-center gap-1 rounded px-2 py-0.5 font-mono text-[9.5px] ring-1 transition",
+                hideOffline
+                  ? "bg-signal/20 text-signal-lt ring-signal/50"
+                  : "bg-raised text-mute ring-line hover:bg-panel hover:text-fg",
+              )}
+            >
+              <Eye size={11} className={hideOffline ? "text-signal-lt" : undefined} />
+              <span className="hidden xs:inline">Online</span>
+            </button>
+            <button
+              onClick={toggleAll}
+              title={allExpanded ? "Collapse all categories" : "Expand all categories"}
+              aria-label={allExpanded ? "Collapse all categories" : "Expand all categories"}
+              className="flex items-center gap-1 rounded bg-raised px-2 py-0.5 font-mono text-[9.5px] text-mute ring-1 ring-line transition hover:bg-panel hover:text-fg"
+            >
+              {allExpanded ? (
+                <>
+                  <ChevronsDownUp size={11} className="text-signal-lt" />
+                  <span className="hidden xs:inline">Collapse</span>
+                </>
+              ) : (
+                <>
+                  <ChevronsUpDown size={11} className="text-signal-lt" />
+                  <span className="hidden xs:inline">Expand</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Search input with quick clear */}

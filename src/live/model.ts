@@ -12,6 +12,8 @@ export type LiveConfig = {
   showNowNext: boolean;
   showChannelNumbers: boolean;
   autoHideChrome: boolean;
+  /** Hide channels the server probe marked offline (unknown stays visible). */
+  hideOffline: boolean;
 };
 
 export const DEFAULT_CONFIG: LiveConfig = {
@@ -23,6 +25,7 @@ export const DEFAULT_CONFIG: LiveConfig = {
   showNowNext: true,
   showChannelNumbers: true,
   autoHideChrome: false,
+  hideOffline: false,
 };
 
 export type LayoutPreset = {

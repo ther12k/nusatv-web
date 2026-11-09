@@ -2,12 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Hls from "hls.js";
 import {
   Captions,
+  Loader2,
   Maximize,
   Pause,
   PictureInPicture2,
   Play,
   Radio,
   SkipForward,
+  TriangleAlert,
   Volume2,
   VolumeX,
 } from "lucide-react";
@@ -56,6 +58,10 @@ export default function PlayerStage({
 }: Props) {
   const [tuning, setTuning] = useState(false);
   const [chrome, setChrome] = useState(true);
+  /** True once the current source has actually produced video frames —
+   *  until then the stage shows the probe's latest frame + a spinner. */
+  const [streamLive, setStreamLive] = useState(false);
+  const [streamError, setStreamError] = useState<string | null>(null);
 
   const sig = signalFor(ch);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -145,11 +151,15 @@ export default function PlayerStage({
     const video = videoRef.current;
     if (!video) return;
     exhaustedRef.current = false;
+    setStreamLive(false);
+    setStreamError(null);
     const hls = new Hls({ autoStartLoad: true });
     hls.loadSource(playUrl(activeUrl, { proxy, relay: activeRelay }));
     hls.attachMedia(video);
     hls.on(Hls.Events.FRAG_LOADED, () => {
       exhaustedRef.current = false;
+      setStreamLive(true);
+      setStreamError(null);
       video.removeAttribute("data-hls-error");
     });
     hls.on(Hls.Events.ERROR, (_e, data) => {
@@ -162,6 +172,7 @@ export default function PlayerStage({
         onSourceChange((safeSourceIndex + 1) % sources.length);
       } else {
         video.setAttribute("data-hls-error", data.details);
+        setStreamError(data.details);
       }
     });
     return () => {
@@ -208,13 +219,57 @@ export default function PlayerStage({
         autoPlay
         muted={muted}
         playsInline
+        onPlaying={() => setStreamLive(true)}
+        onLoadedData={() => setStreamLive(true)}
         className={cx("h-full w-full object-cover", playing && !tuning && "animate-drift")}
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/10 to-ink/40 opacity-70" />
       <div className="scan pointer-events-none absolute inset-0 opacity-40 mix-blend-multiply" />
 
+      {/* Tuning overlay — the probe worker's LATEST FRAME holds the stage
+       *  with a spinner until the stream actually delivers frames (the
+       *  video sits beneath; this fades out the moment it goes live). */}
+      <div
+        data-tuning-overlay={streamLive ? undefined : "true"}
+        className={cx(
+          "pointer-events-none absolute inset-0 z-20 bg-ink transition-opacity duration-500",
+          streamLive && "opacity-0",
+        )}
+        aria-hidden={streamLive}
+      >
+        {livePoster && (
+          <img
+            src={livePoster}
+            alt=""
+            className="h-full w-full scale-[1.02] object-cover opacity-80"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/30" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5">
+          {streamError ? (
+            <>
+              <TriangleAlert size={26} className="text-red-400" />
+              <p className="text-[13px] font-bold tracking-tight text-white">Signal problem</p>
+              <p className="font-mono text-[10px] tracking-wider text-dim uppercase">
+                {streamError}{sources.length > 1 ? " · press S for another server" : ""}
+              </p>
+            </>
+          ) : (
+            <>
+              <Loader2 size={26} className="animate-spin text-signal-lt" />
+              <p className="text-[13px] font-bold tracking-tight text-white/90">
+                Tuning CH {ch.num} · {ch.name}
+              </p>
+              <p className="font-mono text-[10px] tracking-wider text-dim uppercase">
+                Last frame from server probe
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+
       {tuning && (
-        <div className="snow pointer-events-none absolute inset-0 z-20 animate-tune mix-blend-screen opacity-50" />
+        <div className="snow pointer-events-none absolute inset-0 z-30 animate-tune mix-blend-screen opacity-50" />
       )}
 
       {/* top-left identity */}

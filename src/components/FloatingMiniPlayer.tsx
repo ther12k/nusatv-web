@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 import {
+  Loader2,
   Maximize2,
   Pause,
   PictureInPicture2,
@@ -10,8 +11,10 @@ import {
   X,
 } from "lucide-react";
 import type { Channel } from "../data";
+import { imgFor } from "../data";
 import { ChannelBug, cx, LiveDot } from "./ui";
 import { playUrl } from "../live/playUrl";
+import { useChannelStatus } from "../live/useChannelStatus";
 
 type Props = {
   ch: Channel;
@@ -38,6 +41,9 @@ export default function FloatingMiniPlayer({
 }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [hovered, setHovered] = useState(false);
+  const [streamLive, setStreamLive] = useState(false);
+  const { statusMap } = useChannelStatus();
+  const poster = statusMap[ch.id]?.thumb ?? imgFor(ch);
 
   const sources =
     ch.sources && ch.sources.length > 0
@@ -51,9 +57,11 @@ export default function FloatingMiniPlayer({
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+    setStreamLive(false);
     const hls = new Hls({ autoStartLoad: true });
     hls.loadSource(playUrl(activeUrl, { proxy, relay: activeSource.relay ?? false }));
     hls.attachMedia(video);
+    hls.on(Hls.Events.FRAG_LOADED, () => setStreamLive(true));
     return () => {
       hls.destroy();
     };
@@ -125,8 +133,20 @@ export default function FloatingMiniPlayer({
           autoPlay
           muted={muted}
           playsInline
+          onPlaying={() => setStreamLive(true)}
+          onLoadedData={() => setStreamLive(true)}
           className="h-full w-full object-cover"
         />
+
+        {/* Latest probed frame + spinner until the stream delivers frames */}
+        {!streamLive && (
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-ink/70">
+            {poster && (
+              <img src={poster} alt="" className="absolute h-full w-full object-cover opacity-60" />
+            )}
+            <Loader2 size={18} className="relative animate-spin text-signal-lt" />
+          </div>
+        )}
 
         {/* Floating Controls Overlay (shown on hover or when paused) */}
         <div

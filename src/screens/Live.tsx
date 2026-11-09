@@ -4,6 +4,7 @@ import { CHANNELS, hhmm, type Channel } from "../data";
 import { useLive } from "../live/LiveContext";
 import { CATS, LAYOUTS, type LayoutId } from "../live/model";
 import { ChannelBug, cx, Eyebrow } from "../components/ui";
+import { useChannelStatus } from "../live/useChannelStatus";
 import PlayerStage from "./live/PlayerStage";
 import ChannelList from "./live/ChannelList";
 import BroadcastEpg from "./live/BroadcastEpg";
@@ -21,6 +22,9 @@ export default function Live({ now }: Props) {
 
 
   const [query, setQuery] = useState("");
+  /** Probe health (shared-cache poll of /status.json) — powers the
+   *  hide-offline filter; unknown channels are kept (unknown ≠ offline). */
+  const { statusMap } = useChannelStatus();
 
 
   const flash = useCallback((msg: string) => {
@@ -50,9 +54,13 @@ export default function Live({ now }: Props) {
         c.abbr.toLowerCase().includes(term) ||
         c.now.toLowerCase().includes(term) ||
         String(c.num).includes(term);
-      return okCat && okQ;
+      // Online-only: the server probe said offline → hide. Never-probed
+      // channels (no entry yet) stay visible.
+      const okSignal =
+        !config.hideOffline || statusMap[c.id]?.status !== "offline";
+      return okCat && okQ && okSignal;
     });
-  }, [cat, query, favs]);
+  }, [cat, query, favs, config.hideOffline, statusMap, channels]);
 
   const cats = [...CATS, ...[...new Set(channels.map((c) => c.cat))].filter((g) => !(CATS as readonly string[]).includes(g))];
   const ch = channels.find((c) => c.id === activeId) ?? channels[0];
@@ -265,6 +273,8 @@ export default function Live({ now }: Props) {
     density: config.density,
     showNumbers: config.showChannelNumbers,
     countLabel,
+    hideOffline: config.hideOffline,
+    onToggleHideOffline: () => patch({ hideOffline: !config.hideOffline }),
     onCat: setCat,
     onQuery: setQuery,
     onSelect: select,
