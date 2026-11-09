@@ -315,14 +315,14 @@ export default function Live({ now }: Props) {
             )}
           >
             <div className="min-h-0 flex-1 lg:max-h-full">
-              <div className="flex h-[min(58vh,520px)] flex-col lg:h-full">
+              <div className="flex h-[60vh] flex-col sm:h-[min(60vh,560px)] lg:h-full">
                 <ChannelList {...listProps} />
               </div>
             </div>
           </aside>
 
           <section className={cx("order-1 min-w-0 lg:overflow-y-auto thin-bar", listFirst ? "lg:order-2" : "lg:order-1")}>
-            <div className="p-2.5 sm:p-3.5 lg:p-4">
+            <div className="p-2 sm:p-3 lg:p-4">
               {stage}
               {config.showNowNext && (
                 <NowNext ch={ch} now={now} playing={playing} onOpen={() => openPlayer(ch)} onSelect={select} />

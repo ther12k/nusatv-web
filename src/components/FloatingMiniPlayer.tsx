@@ -84,7 +84,7 @@ export default function FloatingMiniPlayer({
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="fixed bottom-16 right-4 z-50 w-72 sm:bottom-6 sm:right-6 sm:w-84 overflow-hidden rounded-xl bg-panel shadow-2xl ring-1 ring-line animate-rise transition-all duration-200"
+      className="fixed bottom-20 right-3.5 z-50 w-[min(calc(100vw-1.75rem),18rem)] sm:bottom-6 sm:right-6 sm:w-84 overflow-hidden rounded-xl bg-panel shadow-2xl ring-1 ring-line animate-rise transition-all duration-200"
     >
       {/* Header Bar */}
       <div className="flex items-center justify-between border-b border-line bg-ink/90 px-3 py-1.5 backdrop-blur">
