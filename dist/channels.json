@@ -1,0 +1,272 @@
+[
+  {
+    "id": "metrotv",
+    "num": 1,
+    "name": "Metro TV HD",
+    "src": "https://edge.medcom.id/live-edge/smil:metro.smil/playlist.m3u8"
+  },
+  {
+    "id": "cnnid",
+    "num": 2,
+    "name": "CNN Indonesia",
+    "src": "https://video.detik.com/livecnn/smil:cnntv/chunklist_w268557525_b384000_sleng.m3u8"
+  },
+  {
+    "id": "cnbcid",
+    "num": 3,
+    "name": "CNBC Indonesia",
+    "src": "https://video.detik.com/livecnbc/smil:cnbctv/chunklist_w1279679883_b384000_sleng.m3u8"
+  },
+  {
+    "id": "inews",
+    "num": 4,
+    "name": "iNews HD",
+    "src": "https://live.i-news.tv/hls/stream.m3u8"
+  },
+  {
+    "id": "rtv",
+    "num": 5,
+    "name": "RTV",
+    "src": "https://rtvstream.rtv.co.id:4555/hls/rtv.m3u8"
+  },
+  {
+    "id": "ntv",
+    "num": 6,
+    "name": "Nusantara TV",
+    "src": "https://nusantaratv.siar.us/nusantaratv/live/playlist.m3u8"
+  },
+  {
+    "id": "daai",
+    "num": 7,
+    "name": "DAAI TV",
+    "src": "https://pull.daaiplus.com/live-DAAIPLUS/live-DAAIPLUS_HD.m3u8"
+  },
+  {
+    "id": "magna",
+    "num": 8,
+    "name": "MAGNA Channel",
+    "src": "https://edge.medcom.id/live-edge/smil:magna.smil/chunklist_w521170343_b1128000_sleng.m3u8"
+  },
+  {
+    "id": "bnch",
+    "num": 9,
+    "name": "BN Channel",
+    "src": "https://flv.intechmedia.net/live/ch112.m3u8"
+  },
+  {
+    "id": "tvriworld",
+    "num": 10,
+    "name": "TVRI World",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/TVRIWorld/hls/TVRIWorld.m3u8"
+  },
+  {
+    "id": "tv9",
+    "num": 11,
+    "name": "TV9 Nusantara",
+    "src": "https://5bf7b725107e5.streamlock.net/tv9/tv9/playlist.m3u8"
+  },
+  {
+    "id": "jawapos",
+    "num": 12,
+    "name": "Jawa Pos TV",
+    "src": "http://122.248.43.242:1935/JAWAPOSTVJKT/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "bandungtv",
+    "num": 13,
+    "name": "Bandung TV",
+    "src": "http://202.150.153.254:65500/bandungtvWEBSITE.m3u8"
+  },
+  {
+    "id": "dw",
+    "num": 14,
+    "name": "DW English",
+    "src": "https://dwamdstream102.akamaized.net/hls/live/2015525/dwstream102/index.m3u8"
+  },
+  {
+    "id": "f24en",
+    "num": 15,
+    "name": "France 24 English",
+    "src": "https://static.france24.com/live/F24_EN_LO_HLS/live_web.m3u8"
+  },
+  {
+    "id": "cgtn",
+    "num": 16,
+    "name": "CGTN English",
+    "src": "https://news.cgtn.com/resource/live/english/cgtn-news.m3u8"
+  },
+  {
+    "id": "dwde",
+    "num": 17,
+    "name": "DW Deutsch",
+    "src": "https://dwamdstream101.akamaized.net/hls/live/2015524/dwstream101/index.m3u8"
+  },
+  {
+    "id": "f24fr",
+    "num": 18,
+    "name": "France 24 Fran\u00e7ais",
+    "src": "https://static.france24.com/live/F24_FR_LO_HLS/live_web.m3u8"
+  },
+  {
+    "id": "f24es",
+    "num": 19,
+    "name": "France 24 Espa\u00f1ol",
+    "src": "https://static.france24.com/live/F24_ES_LO_HLS/live_web.m3u8"
+  },
+  {
+    "id": "nasa",
+    "num": 20,
+    "name": "NASA TV Public",
+    "src": "https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8"
+  },
+  {
+    "id": "rbt",
+    "num": 21,
+    "name": "Red Bull TV",
+    "src": "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8"
+  },
+  {
+    "id": "tvri_nasional",
+    "num": 22,
+    "name": "TVRI Nasional",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Nasional/hls/Nasional.m3u8"
+  },
+  {
+    "id": "tvri_dki",
+    "num": 23,
+    "name": "TVRI DKI Jakarta",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/DKI/hls/DKI.m3u8"
+  },
+  {
+    "id": "tvri_jabar",
+    "num": 24,
+    "name": "TVRI Jawa Barat",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Jabar/hls/Jabar.m3u8"
+  },
+  {
+    "id": "tvri_jateng",
+    "num": 25,
+    "name": "TVRI Jawa Tengah",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Jateng/hls/Jateng.m3u8"
+  },
+  {
+    "id": "tvri_jatim",
+    "num": 26,
+    "name": "TVRI Jawa Timur",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Jatim/hls/Jatim.m3u8"
+  },
+  {
+    "id": "tvri_bali",
+    "num": 27,
+    "name": "TVRI Bali",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Bali/hls/Bali.m3u8"
+  },
+  {
+    "id": "tvri_sumut",
+    "num": 28,
+    "name": "TVRI Sumatera Utara",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Sumut/hls/Sumut.m3u8"
+  },
+  {
+    "id": "tvri_sumsel",
+    "num": 29,
+    "name": "TVRI Sumatera Selatan",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Sumsel/hls/Sumsel.m3u8"
+  },
+  {
+    "id": "tvri_sulsel",
+    "num": 30,
+    "name": "TVRI Sulawesi Selatan",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Sulsel/hls/Sulsel.m3u8"
+  },
+  {
+    "id": "tvri_sulut",
+    "num": 31,
+    "name": "TVRI Sulawesi Utara",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Sulut/hls/Sulut.m3u8"
+  },
+  {
+    "id": "tvri_sulteng",
+    "num": 32,
+    "name": "TVRI Sulawesi Tengah",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Sulteng/hls/Sulteng.m3u8"
+  },
+  {
+    "id": "tvri_sultra",
+    "num": 33,
+    "name": "TVRI Sulawesi Tenggara",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Sultra/hls/Sultra.m3u8"
+  },
+  {
+    "id": "tvri_kaltim",
+    "num": 34,
+    "name": "TVRI Kalimantan Timur",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Kaltim/hls/Kaltim.m3u8"
+  },
+  {
+    "id": "tvri_kalbar",
+    "num": 35,
+    "name": "TVRI Kalimantan Barat",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Kalbar/hls/Kalbar.m3u8"
+  },
+  {
+    "id": "tvri_aceh",
+    "num": 36,
+    "name": "TVRI Aceh",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Aceh/hls/Aceh.m3u8"
+  },
+  {
+    "id": "tvri_riau",
+    "num": 37,
+    "name": "TVRI Riau",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Riau/hls/Riau.m3u8"
+  },
+  {
+    "id": "tvri_bengkulu",
+    "num": 38,
+    "name": "TVRI Bengkulu",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Bengkulu/hls/Bengkulu.m3u8"
+  },
+  {
+    "id": "tvri_lampung",
+    "num": 39,
+    "name": "TVRI Lampung",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Lampung/hls/Lampung.m3u8"
+  },
+  {
+    "id": "tvri_babel",
+    "num": 40,
+    "name": "TVRI Kep. Bangka Belitung",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Babel/hls/Babel.m3u8"
+  },
+  {
+    "id": "tvri_ntb",
+    "num": 41,
+    "name": "TVRI Nusa Tenggara Barat",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/NTB/hls/NTB.m3u8"
+  },
+  {
+    "id": "tvri_ntt",
+    "num": 42,
+    "name": "TVRI Nusa Tenggara Timur",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/NTT/hls/NTT.m3u8"
+  },
+  {
+    "id": "tvri_gorontalo",
+    "num": 43,
+    "name": "TVRI Gorontalo",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Gorontalo/hls/Gorontalo.m3u8"
+  },
+  {
+    "id": "tvri_papua",
+    "num": 44,
+    "name": "TVRI Papua",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Papua/hls/Papua.m3u8"
+  },
+  {
+    "id": "mux",
+    "num": 45,
+    "name": "Mux Test",
+    "src": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+  }
+]

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { hhmm, imgFor, signalFor, type Channel } from "../../data";
 import { ChannelBug, cx, LiveDot } from "../../components/ui";
+import { useChannelStatus } from "../../live/useChannelStatus";
 
 type Props = {
   ch: Channel;
@@ -55,6 +56,9 @@ export default function PlayerStage({
   const [chrome, setChrome] = useState(true);
   const sig = signalFor(ch);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const { statusMap } = useChannelStatus();
+  const channelStat = statusMap[ch.id];
+  const livePoster = channelStat?.thumb ?? imgFor(ch);
 
   const sources = ch.sources && ch.sources.length > 0
     ? ch.sources
@@ -125,7 +129,7 @@ export default function PlayerStage({
     >
       <video
         ref={videoRef}
-        poster={imgFor(ch)}
+        poster={livePoster}
         autoPlay
         muted={muted}
         playsInline
@@ -182,10 +186,22 @@ export default function PlayerStage({
       {/* signal + clock */}
       <div
         className={cx(
-          "absolute top-3 right-3 z-10 flex items-center gap-3 transition-opacity duration-300",
+          "absolute top-3 right-3 z-10 flex items-center gap-2.5 transition-opacity duration-300",
           cinema && !chrome && "opacity-0",
         )}
       >
+        {channelStat && (
+          <span
+            className={cx(
+              "hidden items-center gap-1 rounded bg-ink/80 px-2 py-0.5 font-mono text-[9px] font-semibold tracking-wider backdrop-blur sm:flex",
+              channelStat.status === "online" ? "text-emerald-400" : channelStat.status === "offline" ? "text-red-400" : "text-amber-400"
+            )}
+            title={`Last probed signal: ${channelStat.latencyMs}ms`}
+          >
+            <span className={cx("inline-block h-1.5 w-1.5 rounded-full", channelStat.status === "online" ? "bg-emerald-400 animate-pulse" : channelStat.status === "offline" ? "bg-red-400" : "bg-amber-400")} />
+            {channelStat.status.toUpperCase()} {channelStat.latencyMs}ms
+          </span>
+        )}
         <span className="hidden items-end gap-[2px] sm:flex" aria-label={`Signal ${sig}%`}>
           {[1, 2, 3, 4].map((i) => (
             <span

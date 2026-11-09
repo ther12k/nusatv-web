@@ -3,6 +3,7 @@ import Hls from "hls.js";
 import { Play, Star } from "lucide-react";
 import { imgFor, type Channel } from "../../data";
 import { Bar, ChannelBug, cx, LiveDot } from "../../components/ui";
+import { useChannelStatus } from "../../live/useChannelStatus";
 import type { MosaicCount } from "../../live/model";
 
 type Props = {
@@ -44,6 +45,7 @@ function TileVideo({ src, live, proxy = false }: { src: string; live: boolean; p
 }
 
 export default function MosaicGrid({ channels, activeId, count, favs, proxy = false, onSelect, onOpen }: Props) {
+  const { statusMap } = useChannelStatus();
   const tiles = channels.slice(0, count);
   const cols =
     count === 4
@@ -68,7 +70,7 @@ export default function MosaicGrid({ channels, activeId, count, favs, proxy = fa
             )}
           >
             <img
-              src={imgFor(c)}
+              src={statusMap[c.id]?.thumb ?? imgFor(c)}
               alt=""
               className={cx(
                 "h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]",

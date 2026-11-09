@@ -1,3 +1,4 @@
+import path from "node:path";
 /**
  * NusaTV web — static file server (the app is a fully client-side
  * single-page build in ./dist; streams come from the broadcasters'
@@ -8,6 +9,7 @@ const DIST = new URL("./dist/", import.meta.url).pathname;
 
 const MIME: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".css": "text/css; charset=utf-8",
   ".svg": "image/svg+xml",
@@ -82,6 +84,9 @@ async function relayStream(request: Request, target: string): Promise<Response> 
     });
     if (!res.ok || !res.body) return new Response(`upstream HTTP ${res.status}`, { status: 502 });
     const ct = res.headers.get("content-type") ?? "application/octet-stream";
+    if (/html|javascript|ecmascript|svg/i.test(ct)) {
+      return new Response("media relay accepts video/audio streams only", { status: 403 });
+    }
     const isPlaylist =
       /mpegurl|m3u8/i.test(ct) || u.pathname.split("?")[0]!.endsWith(".m3u8");
     if (isPlaylist) {
@@ -127,12 +132,32 @@ Bun.serve({
     }
     let rel = decodeURIComponent(url.pathname);
     if (rel === "/" || rel.endsWith("/")) rel += "index.html";
-    // path traversal guard
-    const file = Bun.file(DIST + rel.replace(/^\/+/, "").replace(/\.\.(\/|$)/g, ""));
+    
+    // Strict path resolution against DIST root
+    const resolved = path.resolve(DIST, "." + path.normalize(rel));
+    if (!resolved.startsWith(DIST)) {
+      return new Response("Forbidden", { status: 403 });
+    }
+    
+    const file = Bun.file(resolved);
+    const isHtml = resolved.endsWith(".html");
+    const isStatus = resolved.endsWith("status.json");
+    const isThumb = resolved.includes("/thumbnails/");
+    
+    const cacheHeader = isStatus
+      ? "no-cache, no-store, must-revalidate"
+      : isThumb
+        ? "public, max-age=30, must-revalidate"
+        : isHtml
+          ? "no-cache"
+          : "public, max-age=86400";
+
+    const ext = path.extname(resolved).toLowerCase();
     return new Response(file, {
       headers: {
-        "content-type": MIME[file.name?.slice(file.name.lastIndexOf("."))] ?? "application/octet-stream",
-        "cache-control": file.name?.endsWith(".html") ? "no-cache" : "public, max-age=86400",
+        "content-type": MIME[ext] ?? "application/octet-stream",
+        "cache-control": cacheHeader,
+        "x-content-type-options": "nosniff",
       },
     });
   },

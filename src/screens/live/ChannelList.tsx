@@ -1,7 +1,9 @@
 import { Search, Star } from "lucide-react";
 import type { Channel } from "../../data";
 import { useEffect, useRef } from "react";
-import { Bar, ChannelBug, Chip, cx, Eyebrow, LiveDot } from "../../components/ui";
+import { ChannelBug, Chip, cx, Eyebrow, LiveDot } from "../../components/ui";
+import { useChannelStatus } from "../../live/useChannelStatus";
+import { Activity } from "lucide-react";
 
 type Props = {
   list: Channel[];
@@ -36,6 +38,7 @@ export default function ChannelList({
   onToggleFav,
 }: Props) {
   const compact = density === "compact";
+  const { statusMap } = useChannelStatus();
   const activeRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -49,7 +52,7 @@ export default function ChannelList({
       <div className="border-b border-line px-3 py-3 sm:px-4">
         <div className="flex items-baseline justify-between gap-3">
           <Eyebrow>Live television</Eyebrow>
-          <span className="font-mono text-[10px] text-dim tnum">{countLabel}</span>
+          <span className="flex items-center gap-1 font-mono text-[10px] text-dim tnum"><Activity size={10} className="text-emerald-400 animate-pulse" /> {countLabel}</span>
         </div>
         <label className="relative mt-3 block">
           <Search size={13} className="absolute top-1/2 left-2.5 -translate-y-1/2 text-dim" />
@@ -95,7 +98,35 @@ export default function ChannelList({
                     {c.num}
                   </span>
                 )}
-                <ChannelBug ch={c} size={active && !compact ? "md" : "sm"} className={active ? "" : "opacity-80"} />
+                {/* Live Channel Thumbnail / Poster */}
+                {(() => {
+                  const stat = statusMap[c.id];
+                  const hasThumb = !!stat?.thumb;
+                  const isOnline = stat?.status === "online";
+                  const isDegraded = stat?.status === "degraded";
+                  const isOffline = stat?.status === "offline";
+
+                  return (
+                    <div className="relative shrink-0 overflow-hidden rounded bg-ink/80 ring-1 ring-white/10" style={{ width: compact ? 42 : 54, aspectRatio: "16/9" }}>
+                      {hasThumb ? (
+                        <img src={stat.thumb!} alt="" className="h-full w-full object-cover" loading="lazy" />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-raised">
+                          <ChannelBug ch={c} size="sm" className="opacity-75" />
+                        </div>
+                      )}
+                      {/* Signal Dot */}
+                      <span
+                        className={cx(
+                          "absolute top-1 right-1 h-2 w-2 rounded-full border border-black/60 shadow-sm",
+                          isOnline ? "bg-emerald-500 shadow-emerald-500/50" : isDegraded ? "bg-amber-500" : isOffline ? "bg-red-500" : "bg-white/40"
+                        )}
+                        title={stat ? `${stat.status.toUpperCase()} (${stat.latencyMs}ms)` : "Checking signal..."}
+                      />
+                    </div>
+                  );
+                })()}
+
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-1.5">
                     <span className={cx("truncate font-semibold", compact ? "text-[12px]" : "text-[13px]", active ? "text-white" : "text-fg/90")}>
@@ -108,10 +139,21 @@ export default function ChannelList({
                     )}
                   </span>
                   {!compact && (
-                    <>
-                      <span className="mt-0.5 block truncate font-mono text-[10px] text-mute">{c.now}</span>
-                      <Bar pct={c.prog} className="mt-1.5 max-w-[180px]" tone={active ? "signal" : "fg"} />
-                    </>
+                    <div className="mt-0.5 flex items-center gap-2 font-mono text-[10px]">
+                      {(() => {
+                        const stat = statusMap[c.id];
+                        if (!stat) return <span className="truncate text-mute">{c.now}</span>;
+                        const online = stat.status === "online";
+                        const offline = stat.status === "offline";
+                        return (
+                          <span className={cx("flex items-center gap-1 truncate font-medium", online ? "text-emerald-400" : offline ? "text-red-400" : "text-amber-400")}>
+                            <span className={cx("inline-block h-1.5 w-1.5 rounded-full", online ? "bg-emerald-400" : offline ? "bg-red-400" : "bg-amber-400")} />
+                            {online ? `${stat.latencyMs}ms` : stat.status.toUpperCase()}
+                            {stat.resolution && <span className="text-dim">· {stat.resolution.split('x')[1]}p</span>}
+                          </span>
+                        );
+                      })()}
+                    </div>
                   )}
                 </span>
                 {active && !compact && <LiveDot />}
