@@ -11,7 +11,9 @@ export type LiveConfig = {
   showEpgStrip: boolean;
   showNowNext: boolean;
   showChannelNumbers: boolean;
-  autoHideChrome: boolean;
+  /** Player chrome (badges, controls) hides after this idle delay.
+   *  0 = always visible. Pointer activity inside the video reveals it. */
+  chromeHideDelayMs: number;
   /** Hide channels the server probe marked offline (unknown stays visible). */
   hideOffline: boolean;
 };
@@ -24,9 +26,17 @@ export const DEFAULT_CONFIG: LiveConfig = {
   showEpgStrip: true,
   showNowNext: true,
   showChannelNumbers: true,
-  autoHideChrome: false,
+  chromeHideDelayMs: 5000,
   hideOffline: false,
 };
+
+/** The chrome auto-hide delay choices offered in the layout panel. */
+export const CHROME_DELAYS: { label: string; ms: number }[] = [
+  { label: "Off", ms: 0 },
+  { label: "3s", ms: 3000 },
+  { label: "5s", ms: 5000 },
+  { label: "8s", ms: 8000 },
+];
 
 export type LayoutPreset = {
   id: LayoutId;
@@ -44,7 +54,7 @@ export const LAYOUTS: LayoutPreset[] = [
     kicker: "Master control",
     blurb: "Channel list beside the player — the rack-room default.",
     keys: "Alt+1",
-    apply: { layout: "studio", listSide: "left", showNowNext: true, autoHideChrome: false },
+    apply: { layout: "studio", listSide: "left", showNowNext: true },
   },
   {
     id: "broadcast",
@@ -52,7 +62,7 @@ export const LAYOUTS: LayoutPreset[] = [
     kicker: "Player + day grid",
     blurb: "Player on top, programme grid by day underneath.",
     keys: "Alt+2",
-    apply: { layout: "broadcast", showEpgStrip: true, autoHideChrome: false },
+    apply: { layout: "broadcast", showEpgStrip: true },
   },
   {
     id: "mosaic",
@@ -60,7 +70,7 @@ export const LAYOUTS: LayoutPreset[] = [
     kicker: "Multi-view",
     blurb: "Several channels at once. Tap a tile to focus it.",
     keys: "Alt+3",
-    apply: { layout: "mosaic", mosaicCount: 6, autoHideChrome: false },
+    apply: { layout: "mosaic", mosaicCount: 6 },
   },
   {
     id: "cinema",
@@ -68,7 +78,7 @@ export const LAYOUTS: LayoutPreset[] = [
     kicker: "Player fills the room",
     blurb: "Chrome tucks away. List slides in on L or hover.",
     keys: "Alt+4",
-    apply: { layout: "cinema", autoHideChrome: true, showNowNext: true },
+    apply: { layout: "cinema", showNowNext: true },
   },
 ];
 

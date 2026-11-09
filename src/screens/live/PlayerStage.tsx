@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Hls from "hls.js";
 import {
   Captions,
@@ -34,6 +34,9 @@ type Props = {
   onNext?: () => void;
   /** Route through this host's /stream relay (non-CORS hosts). */
   proxy?: boolean;
+  /** Idle delay before the video chrome fades (0 = always visible).
+   *  Pointer activity inside the video reveals it again. */
+  hideDelayMs?: number;
   sourceIndex?: number;
   onSourceChange?: (index: number) => void;
 };
@@ -53,6 +56,7 @@ export default function PlayerStage({
   onPrev,
   onNext,
   proxy = false,
+  hideDelayMs = 5000,
   sourceIndex = 0,
   onSourceChange,
 }: Props) {
@@ -62,6 +66,36 @@ export default function PlayerStage({
    *  until then the stage shows the probe's latest frame + a spinner. */
   const [streamLive, setStreamLive] = useState(false);
   const [streamError, setStreamError] = useState<string | null>(null);
+
+  // ---- video chrome (badges + controls) auto-hide ------------------
+  // YouTube-style: chrome shows while the pointer is active inside the
+  // video and fades after `hideDelayMs` idle (or the moment the pointer
+  // leaves the video). 0 = always visible. Tuning a channel reveals it
+  // briefly so the CH badge confirms what landed.
+  const chromeTimer = useRef<number | null>(null);
+  const clearChromeTimer = useCallback(() => {
+    if (chromeTimer.current !== null) {
+      window.clearTimeout(chromeTimer.current);
+      chromeTimer.current = null;
+    }
+  }, []);
+  const revealChrome = useCallback(() => {
+    setChrome(true);
+    if (hideDelayMs <= 0) {
+      clearChromeTimer();
+      return;
+    }
+    clearChromeTimer();
+    chromeTimer.current = window.setTimeout(() => setChrome(false), hideDelayMs);
+  }, [hideDelayMs, clearChromeTimer]);
+  const hideChromeNow = useCallback(() => {
+    clearChromeTimer();
+    if (hideDelayMs > 0) setChrome(false);
+  }, [hideDelayMs, clearChromeTimer]);
+  useEffect(() => clearChromeTimer, [clearChromeTimer]); // unmount
+  useEffect(() => {
+    revealChrome();
+  }, [ch.id, revealChrome]); // a zap flashes the badge, then it fades
 
   const sig = signalFor(ch);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -194,13 +228,6 @@ export default function PlayerStage({
     return () => window.clearTimeout(id);
   }, [ch.id]);
 
-  useEffect(() => {
-    if (!cinema) return;
-    setChrome(true);
-    const id = window.setTimeout(() => setChrome(false), 2800);
-    return () => window.clearTimeout(id);
-  }, [cinema, ch.id]);
-
   const bars = Math.round((sig / 100) * 4);
 
   return (
@@ -211,7 +238,10 @@ export default function PlayerStage({
         fill ? "h-full w-full" : "aspect-video w-full",
         cinema ? "rounded-none ring-0" : "rounded-lg",
       )}
-      onMouseMove={() => cinema && setChrome(true)}
+      onPointerMove={revealChrome}
+      onPointerDown={revealChrome}
+      onMouseEnter={revealChrome}
+      onMouseLeave={hideChromeNow}
     >
       <video
         ref={videoRef}
@@ -276,7 +306,7 @@ export default function PlayerStage({
       <div
         className={cx(
           "absolute top-3 left-3 z-10 flex flex-wrap items-center gap-2 transition-opacity duration-300",
-          cinema && !chrome && "opacity-0",
+          !chrome && "pointer-events-none opacity-0",
         )}
       >
         <LiveDot />
@@ -317,7 +347,7 @@ export default function PlayerStage({
       <div
         className={cx(
           "absolute top-3 right-3 z-10 flex items-center gap-2 transition-opacity duration-300",
-          cinema && !chrome && "opacity-0",
+          !chrome && "pointer-events-none opacity-0",
         )}
       >
         <button
@@ -377,7 +407,7 @@ export default function PlayerStage({
           onClick={onTogglePlay}
           className={cx(
             "absolute inset-0 z-[5] flex items-center justify-center",
-            cinema && !chrome && "opacity-0",
+            !chrome && "pointer-events-none opacity-0",
           )}
           aria-label={playing ? "Pause" : "Play"}
         >
@@ -396,7 +426,7 @@ export default function PlayerStage({
         <div
           className={cx(
             "absolute inset-x-0 bottom-0 z-10 flex items-center gap-3 px-3.5 pb-3 transition-opacity duration-300 sm:gap-4 sm:px-4",
-            cinema && !chrome && "pointer-events-none opacity-0",
+            !chrome && "pointer-events-none opacity-0",
           )}
         >
           <button onClick={onMute} className="text-white/85 hover:text-signal-lt" aria-label={muted ? "Unmute" : "Mute"}>

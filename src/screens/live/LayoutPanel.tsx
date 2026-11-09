@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Check, Columns3, Grid2x2, PanelLeft, PanelRight, Rows3, StretchHorizontal, Tv2, X } from "lucide-react";
-import { LAYOUTS, type Density, type LayoutId, type ListSide, type LiveConfig, type MosaicCount } from "../../live/model";
+import { CHROME_DELAYS, LAYOUTS, type Density, type LayoutId, type ListSide, type LiveConfig, type MosaicCount } from "../../live/model";
 import { Chip, cx, Eyebrow, Toggle } from "../../components/ui";
 
 type Props = {
@@ -124,12 +124,25 @@ export default function LayoutPanel({ config, onPatch, onPreset, onReset, onClos
             on={config.showChannelNumbers}
             onChange={(v) => onPatch({ showChannelNumbers: v })}
           />
-          <ToggleRow
-            label="Auto-hide chrome"
-            hint="Cinema fades controls after idle"
-            on={config.autoHideChrome}
-            onChange={(v) => onPatch({ autoHideChrome: v })}
-          />
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5">
+            <div className="min-w-0">
+              <div className="text-[13px] font-semibold">Auto-hide player controls</div>
+              <div className="mt-0.5 text-[11.5px] text-mute">
+                Video chrome fades when the pointer leaves or idles — move over the video to bring it back
+              </div>
+            </div>
+            <div className="flex shrink-0 gap-1.5">
+              {CHROME_DELAYS.map((d) => (
+                <Chip
+                  key={d.ms}
+                  active={config.chromeHideDelayMs === d.ms}
+                  onClick={() => onPatch({ chromeHideDelayMs: d.ms })}
+                >
+                  {d.label}
+                </Chip>
+              ))}
+            </div>
+          </div>
         </section>
 
         <p className="font-mono text-[10px] leading-relaxed tracking-[0.08em] text-dim uppercase">

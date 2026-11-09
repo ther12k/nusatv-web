@@ -284,6 +284,7 @@ export default function Live({ now }: Props) {
   const stage = (
     <PlayerStage
       proxy={proxy}
+      hideDelayMs={config.chromeHideDelayMs}
       ch={ch}
       sourceIndex={currentSourceIndex}
       onSourceChange={setSourceIndex}
