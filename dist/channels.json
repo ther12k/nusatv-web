@@ -268,5 +268,719 @@
     "num": 45,
     "name": "Mux Test",
     "src": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
+  },
+  {
+    "id": "btv",
+    "num": 46,
+    "name": "BTV",
+    "src": "https://lnd0t3b922.tenbytecdn.com/ta-sg1/90369cf5-6ac2-411d-b3d0-15fae10a2e2c/master.m3u8"
+  },
+  {
+    "id": "garudatv",
+    "num": 47,
+    "name": "Garuda TV",
+    "src": "https://hgmtv.com:19360/garudatvlivestreaming/garudatvlivestreaming.m3u8"
+  },
+  {
+    "id": "mgn",
+    "num": 48,
+    "name": "Metro Globe Network",
+    "src": "https://edge.medcom.id/live-edge/smil:mgnch.smil/playlist.m3u8"
+  },
+  {
+    "id": "indonesiana",
+    "num": 49,
+    "name": "Indonesiana TV",
+    "src": "https://tvstreamcast.com/indonesiana.m3u8"
+  },
+  {
+    "id": "tic",
+    "num": 50,
+    "name": "The Indonesia Channel",
+    "src": "https://restreamer.indonusa.id:8443/d5f4ad43-1b5a-4b0f-8bef-5b37224ed221.m3u8"
+  },
+  {
+    "id": "uchannel",
+    "num": 51,
+    "name": "U Channel",
+    "src": "https://srs.u-channel.tv/live/uchannel-tv.m3u8"
+  },
+  {
+    "id": "salira",
+    "num": 52,
+    "name": "Salira TV",
+    "src": "https://live.salira.tv/p/3870/hybrid/play.m3u8"
+  },
+  {
+    "id": "mbgtv",
+    "num": 53,
+    "name": "MBG TV",
+    "src": "https://stream.convergen.co/mbg_stream/smil:mbStream.smil/playlist.m3u8"
+  },
+  {
+    "id": "vtv",
+    "num": 54,
+    "name": "VTV",
+    "src": "https://flv.intechmedia.net/live/ch107.m3u8"
+  },
+  {
+    "id": "rinjani",
+    "num": 55,
+    "name": "Rinjani TV",
+    "src": "https://rinjanitv.cloud/hls/tvkabel.m3u8"
+  },
+  {
+    "id": "lingkar",
+    "num": 56,
+    "name": "Lingkar TV",
+    "src": "https://lingkartv.my.id/hls/lingkartv.m3u8"
+  },
+  {
+    "id": "caruban",
+    "num": 57,
+    "name": "Caruban TV",
+    "src": "https://stream.carubantv.id/hls/0/stream.m3u8"
+  },
+  {
+    "id": "jambitv",
+    "num": 58,
+    "name": "Jambi TV",
+    "src": "https://jambitv.globaldigitalcore.com/hls/sah5tu7Eiveepohyieyie3OoteL2anga.m3u8"
+  },
+  {
+    "id": "efarina",
+    "num": 59,
+    "name": "Efarina TV",
+    "src": "https://live.efarinatv.com/hls/bgtaufikganteng.m3u8"
+  },
+  {
+    "id": "usmtv",
+    "num": 60,
+    "name": "USM TV",
+    "src": "https://play.fsa-stream.my.id/hls/siaran.m3u8"
+  },
+  {
+    "id": "pktv",
+    "num": 61,
+    "name": "PKTV",
+    "src": "https://streaming.id18.tunnel.my.id/hls/stream.m3u8"
+  },
+  {
+    "id": "sangaji",
+    "num": 62,
+    "name": "Sangaji TV",
+    "src": "https://cdn.adyadigitalteknologi.com:8090/vod/relay.m3u8"
+  },
+  {
+    "id": "kilisuci",
+    "num": 63,
+    "name": "Kilisuci TV",
+    "src": "https://5bf7b725107e5.streamlock.net/kstv/kstv/playlist.m3u8"
+  },
+  {
+    "id": "brtv",
+    "num": 64,
+    "name": "BRTV",
+    "src": "https://5bf7b725107e5.streamlock.net/brtv/brtv/playlist.m3u8"
+  },
+  {
+    "id": "bmstv",
+    "num": 65,
+    "name": "BMS TV",
+    "src": "https://5bf7b725107e5.streamlock.net/bmstv/bmstv/playlist.m3u8"
+  },
+  {
+    "id": "angeltv",
+    "num": 66,
+    "name": "Angel TV",
+    "src": "https://janya-digimix.akamaized.net/vglive-sk-234616/indonesia/ngrp:angelindonesia_all/playlist.m3u8"
+  },
+  {
+    "id": "densfood",
+    "num": 67,
+    "name": "Dens Food Channel",
+    "src": "https://op-flashcon-digdayahd-1.dens.tv/h/h221/02.m3u8"
+  },
+  {
+    "id": "balikpapan",
+    "num": 68,
+    "name": "Balikpapan TV",
+    "src": "http://122.248.43.242:1935/BALIKPAPANTV/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "batamtv",
+    "num": 69,
+    "name": "Batam TV",
+    "src": "http://122.248.43.242:1935/BATAMTV/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "bantentv",
+    "num": 70,
+    "name": "Banten TV",
+    "src": "https://5bf7b725107e5.streamlock.net/bantentv/bantentv/playlist.m3u8"
+  },
+  {
+    "id": "bungotv",
+    "num": 71,
+    "name": "Bungo TV",
+    "src": "https://5bf7b725107e5.streamlock.net/bungotv/bungotv/playlist.m3u8"
+  },
+  {
+    "id": "dutatv",
+    "num": 72,
+    "name": "Duta TV",
+    "src": "https://dutatv.siar.us/dutatv/live/playlist.m3u8"
+  },
+  {
+    "id": "fajartv",
+    "num": 73,
+    "name": "Fajar TV",
+    "src": "http://122.248.43.242:1935/FAJARTV/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "jektv",
+    "num": 74,
+    "name": "Jek TV",
+    "src": "http://27.124.81.245:1935/jektv/myStream/playlist.m3u8"
+  },
+  {
+    "id": "jitv",
+    "num": 75,
+    "name": "Jogja Istimewa TV",
+    "src": "http://103.255.15.222:1935/tv/jitv_720p/playlist.m3u8"
+  },
+  {
+    "id": "jogjatv",
+    "num": 76,
+    "name": "Jogja TV",
+    "src": "https://stream.jogjatv.co.id/jtvlive/stream/index.m3u8"
+  },
+  {
+    "id": "jtv",
+    "num": 77,
+    "name": "JTV Surabaya",
+    "src": "http://122.248.43.242:1935/JTVSURABAYA/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "jtvkediri",
+    "num": 78,
+    "name": "JTV Kediri",
+    "src": "http://122.248.43.242:1935/JTVKEDIRI/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "jtvmadiun",
+    "num": 79,
+    "name": "JTV Madiun",
+    "src": "http://122.248.43.242:1935/JTVMADIUN/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "jtvmalang",
+    "num": 80,
+    "name": "JTV Malang",
+    "src": "http://122.248.43.242:1935/JTVMALANG/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "kawanua",
+    "num": 81,
+    "name": "Kawanua TV",
+    "src": "http://122.248.43.242:1935/KAWANUATV/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "madutv",
+    "num": 82,
+    "name": "Madu TV",
+    "src": "https://re1.siar.us/madutv/hd720/playlist.m3u8"
+  },
+  {
+    "id": "padangtv",
+    "num": 83,
+    "name": "Padang TV",
+    "src": "http://122.248.43.242:1935/PADANGTV/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "pontv",
+    "num": 84,
+    "name": "PONTV",
+    "src": "http://122.248.43.242:1935/PONTV/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "radartv",
+    "num": 85,
+    "name": "Radar Tasikmalaya TV",
+    "src": "https://v2.siar.us/radartasikmalaya/live/playlist.m3u8"
+  },
+  {
+    "id": "rctv",
+    "num": 86,
+    "name": "RCTV",
+    "src": "https://v10.siar.us/rctv/live/playlist.m3u8"
+  },
+  {
+    "id": "riautv",
+    "num": 87,
+    "name": "Riau TV",
+    "src": "http://122.248.43.242:1935/RIAUTV/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "stv",
+    "num": 88,
+    "name": "Samarinda TV",
+    "src": "http://122.248.43.242:1935/SAMARINDATV/_definst_/myStream/playlist.m3u8"
+  },
+  {
+    "id": "tatv",
+    "num": 89,
+    "name": "TATV Semarang",
+    "src": "https://v2.siar.us/tatv/live.sdp/playlist.m3u8"
+  },
+  {
+    "id": "tvtabalong",
+    "num": 90,
+    "name": "TV Tabalong",
+    "src": "https://5bf7b725107e5.streamlock.net/tvtabalong/tvtabalong/playlist.m3u8"
+  },
+  {
+    "id": "dhohotv",
+    "num": 91,
+    "name": "Dhoho TV",
+    "src": "https://dhohotv.siar.us/dhohotv/live/playlist.m3u8"
+  },
+  {
+    "id": "banjartv",
+    "num": 92,
+    "name": "Banjar TV",
+    "src": "https://banjartv.siar.us/banjartv/live/playlist.m3u8"
+  },
+  {
+    "id": "aktv",
+    "num": 93,
+    "name": "AKTV Kaltim",
+    "src": "https://akativi.siar.us/live/akativi.m3u8"
+  },
+  {
+    "id": "stara",
+    "num": 94,
+    "name": "Stara TV",
+    "src": "https://stream.staratv.id/hls/0/stream.m3u8"
+  },
+  {
+    "id": "starajkt",
+    "num": 95,
+    "name": "Stara TV Jakarta",
+    "src": "https://jakarta.staratv.id/hls/0/stream.m3u8"
+  },
+  {
+    "id": "starabdg",
+    "num": 96,
+    "name": "Stara TV Bandung",
+    "src": "https://bandung.staratv.id/hls/0/stream.m3u8"
+  },
+  {
+    "id": "staramlg",
+    "num": 97,
+    "name": "Stara TV Malang",
+    "src": "https://malang.staratv.id/hls/0/stream.m3u8"
+  },
+  {
+    "id": "starabjn",
+    "num": 98,
+    "name": "Stara TV Bojonegoro",
+    "src": "https://bojonegoro.staratv.id/hls/stream.m3u8"
+  },
+  {
+    "id": "staracjr",
+    "num": 99,
+    "name": "Stara TV Cianjur",
+    "src": "https://cianjur.staratv.id/hls/0/stream.m3u8"
+  },
+  {
+    "id": "staraphy",
+    "num": 100,
+    "name": "Stara TV Parahyangan",
+    "src": "https://parahyangan.staratv.id/hls/0/stream.m3u8"
+  },
+  {
+    "id": "ahsantv",
+    "num": 101,
+    "name": "Ahsan TV",
+    "src": "https://5bf7b725107e5.streamlock.net/ahsantv/ahsantv/playlist.m3u8"
+  },
+  {
+    "id": "alwafa",
+    "num": 102,
+    "name": "Al Wafa Tarim",
+    "src": "https://ammedia.siar.us/ammedia/live/playlist.m3u8"
+  },
+  {
+    "id": "ashiil",
+    "num": 103,
+    "name": "Ashiil TV",
+    "src": "https://wahyu1ptv.pages.dev/AshiilTV-HD.m3u8"
+  },
+  {
+    "id": "asthatv",
+    "num": 104,
+    "name": "Astha TV",
+    "src": "https://hgmtv.com:2020/hls/asthalive/asthalive.m3u8"
+  },
+  {
+    "id": "dhammatv",
+    "num": 105,
+    "name": "Dhamma TV",
+    "src": "https://b.webcache.maxindo.net.id/dhamma/dhamma.m3u8"
+  },
+  {
+    "id": "madani",
+    "num": 106,
+    "name": "Madani TV",
+    "src": "https://stream.asianastream.com/madani/madanitv.smil/playlist.m3u8"
+  },
+  {
+    "id": "mqtv",
+    "num": 107,
+    "name": "MQTV",
+    "src": "https://5bf7b725107e5.streamlock.net/mqtv/mqtv/playlist.m3u8"
+  },
+  {
+    "id": "salamtv",
+    "num": 108,
+    "name": "Salam TV",
+    "src": "https://live.salamtelevisi.com/hls/0/stream.m3u8"
+  },
+  {
+    "id": "dmitv",
+    "num": 109,
+    "name": "DMI TV",
+    "src": "https://tvstreamcast.com/tawaftv.m3u8"
+  },
+  {
+    "id": "mic",
+    "num": 110,
+    "name": "Music Information Channel",
+    "src": "https://mic.siar.us/mic/live/mic.m3u8"
+  },
+  {
+    "id": "ssfm",
+    "num": 111,
+    "name": "Suara Surabaya (Visual)",
+    "src": "https://ssfm.siar.us/ssfm/live/playlist.m3u8"
+  },
+  {
+    "id": "now80s",
+    "num": 112,
+    "name": "Now 80's",
+    "src": "https://lightning-now80s-samsungnz.amagi.tv/playlist.m3u8"
+  },
+  {
+    "id": "trtmuzik",
+    "num": 113,
+    "name": "TRT M\u00fczik",
+    "src": "https://tv-trtmuzik.medya.trt.com.tr/master.m3u8"
+  },
+  {
+    "id": "c70s",
+    "num": 114,
+    "name": "70s Cinema",
+    "src": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5f4d878d3d19b30007d2e782/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=96&deviceId=5f4d878d3d19b30007d2e782&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false"
+  },
+  {
+    "id": "c80s",
+    "num": 115,
+    "name": "80s Rewind",
+    "src": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5ca525b650be2571e3943c63/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=95&deviceId=5ca525b650be2571e3943c63&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false"
+  },
+  {
+    "id": "c90s",
+    "num": 116,
+    "name": "90s Throwback",
+    "src": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5f4d86f519358a00072b978e/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=94&deviceId=5f4d86f519358a00072b978e&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false"
+  },
+  {
+    "id": "classicmovies",
+    "num": 117,
+    "name": "Classic Movies",
+    "src": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/561c5b0dada51f8004c4d855/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=106&deviceId=561c5b0dada51f8004c4d855&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false"
+  },
+  {
+    "id": "paramountmovies",
+    "num": 118,
+    "name": "Paramount Movies",
+    "src": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5cb0cae7a461406ffe3f5213/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=100&deviceId=5cb0cae7a461406ffe3f5213&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false"
+  },
+  {
+    "id": "actionhw",
+    "num": 119,
+    "name": "Action Hollywood",
+    "src": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-actionhollywood-samsungnz/playlist.m3u8"
+  },
+  {
+    "id": "plutoaction",
+    "num": 120,
+    "name": "Pluto TV Action",
+    "src": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/561d7d484dc7c8770484914a/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=54&deviceId=561d7d484dc7c8770484914a&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false"
+  },
+  {
+    "id": "plutocomedy",
+    "num": 121,
+    "name": "Pluto TV Comedy",
+    "src": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5a4d3a00ad95e4718ae8d8db/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=57&deviceId=5a4d3a00ad95e4718ae8d8db&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false"
+  },
+  {
+    "id": "plutodrama",
+    "num": 122,
+    "name": "Pluto TV Drama",
+    "src": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5b4e92e4694c027be6ecece1/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=60&deviceId=5b4e92e4694c027be6ecece1&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false"
+  },
+  {
+    "id": "plutohorror",
+    "num": 123,
+    "name": "Pluto TV Horror",
+    "src": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/569546031a619b8f07ce6e25/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=75&deviceId=569546031a619b8f07ce6e25&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false"
+  },
+  {
+    "id": "plutowestern",
+    "num": 124,
+    "name": "Pluto TV Westerns",
+    "src": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5b4e94282d4ec87bdcbb87cd/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=103&deviceId=5b4e94282d4ec87bdcbb87cd&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false"
+  },
+  {
+    "id": "plutocult",
+    "num": 125,
+    "name": "Pluto TV Cult Films",
+    "src": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5c665db3e6c01b72c4977bc2/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=109&deviceId=5c665db3e6c01b72c4977bc2&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false"
+  },
+  {
+    "id": "plutodocs",
+    "num": 126,
+    "name": "Pluto TV Documentaries",
+    "src": "https://service-stitcher.clusters.pluto.tv/stitch/hls/channel/5b85a7582921777994caea63/master.m3u8?terminate=false&deviceType=web&deviceMake=web&deviceModel=web&sid=91&deviceId=5b85a7582921777994caea63&deviceVersion=DNT&appVersion=DNT&deviceDNT=0&userId=&advertisingId=&deviceLat=&deviceLon=&app_name=&appName=web&buildVersion=&appStoreUrl=&architecture=&includeExtendedEvents=false&marketingRegion=US&serverSideAds=false"
+  },
+  {
+    "id": "cgtndoc",
+    "num": 127,
+    "name": "CGTN Documentary",
+    "src": "https://news.cgtn.com/resource/live/document/cgtn-doc.m3u8"
+  },
+  {
+    "id": "aljazeera",
+    "num": 128,
+    "name": "Al Jazeera English",
+    "src": "https://live-hls-apps-aje-fa.getaj.net/AJE/index.m3u8"
+  },
+  {
+    "id": "aljazeera_ar",
+    "num": 129,
+    "name": "Al Jazeera Arabic",
+    "src": "https://live-hls-web-aja.getaj.net/AJA/index.m3u8"
+  },
+  {
+    "id": "ajmubasher",
+    "num": 130,
+    "name": "Al Jazeera Mubasher",
+    "src": "https://live-hls-web-ajm.getaj.net/AJM/index.m3u8"
+  },
+  {
+    "id": "alarabiya",
+    "num": 131,
+    "name": "Al Arabiya",
+    "src": "https://live.alarabiya.net/alarabiapublish/alarabiya.smil/playlist.m3u8"
+  },
+  {
+    "id": "alhadath",
+    "num": 132,
+    "name": "Al Hadath",
+    "src": "https://live.alarabiya.net/alarabiapublish/alhadath.smil/alarabiapublish/alhadath_1080p/chunks.m3u8"
+  },
+  {
+    "id": "abcnewsus",
+    "num": 133,
+    "name": "ABC News (US)",
+    "src": "https://abcnews-streams.akamaized.net/hls/live/2023560/abcnewshudson1/master.m3u8"
+  },
+  {
+    "id": "abcnewsau",
+    "num": 134,
+    "name": "ABC News (AU)",
+    "src": "https://c.mjh.nz/abc-news.m3u8"
+  },
+  {
+    "id": "cbsnews",
+    "num": 135,
+    "name": "CBS News",
+    "src": "https://cbsnews.akamaized.net/hls/live/2020607/cbsnlineup_8/master.m3u8"
+  },
+  {
+    "id": "nbcnow",
+    "num": 136,
+    "name": "NBC News NOW",
+    "src": "https://d1si3n1st4nkgb.cloudfront.net/10502/88896001/hls/master.m3u8?ads.xumo_channelId=88896001"
+  },
+  {
+    "id": "bloomberg",
+    "num": 137,
+    "name": "Bloomberg TV",
+    "src": "https://bloomberg.com/media-manifest/streams/us.m3u8"
+  },
+  {
+    "id": "skyarabia",
+    "num": 138,
+    "name": "Sky News Arabia",
+    "src": "https://stream.skynewsarabia.com/hls/sna.m3u8"
+  },
+  {
+    "id": "trtworld",
+    "num": 139,
+    "name": "TRT World",
+    "src": "https://tv-trtworld.medya.trt.com.tr/master.m3u8"
+  },
+  {
+    "id": "nhkworld",
+    "num": 140,
+    "name": "NHK World Japan",
+    "src": "https://master.nhkworld.jp/nhkworld-tv/playlist/live.m3u8"
+  },
+  {
+    "id": "dwes",
+    "num": 141,
+    "name": "DW Espa\u00f1ol",
+    "src": "https://dwamdstream104.akamaized.net/hls/live/2015530/dwstream104/stream04/streamPlaylist.m3u8"
+  },
+  {
+    "id": "cgtnes",
+    "num": 142,
+    "name": "CGTN Espa\u00f1ol",
+    "src": "https://news.cgtn.com/resource/live/espanol/cgtn-e.m3u8"
+  },
+  {
+    "id": "cgtnfr",
+    "num": 143,
+    "name": "CGTN Fran\u00e7ais",
+    "src": "https://news.cgtn.com/resource/live/french/cgtn-f.m3u8"
+  },
+  {
+    "id": "arirang",
+    "num": 144,
+    "name": "Arirang TV",
+    "src": "https://amdlive.ctnd.com.edgesuite.net/arirang_1ch/smil:arirang_1ch.smil/playlist.m3u8"
+  },
+  {
+    "id": "indiatoday",
+    "num": 145,
+    "name": "India Today",
+    "src": "https://indiatodaylive.akamaized.net/hls/live/2014320/indiatoday/indiatodaylive/playlist.m3u8"
+  },
+  {
+    "id": "recordnews",
+    "num": 146,
+    "name": "Record News",
+    "src": "https://rnw-rn.otteravision.com/rnw/rn/rnw_rn.m3u8"
+  },
+  {
+    "id": "sabcnews",
+    "num": 147,
+    "name": "SABC News",
+    "src": "https://sabconetanw.cdn.mangomolo.com/news/smil:news.stream.smil/chunklist_b250000_t64MjQwcA==.m3u8"
+  },
+  {
+    "id": "scripps",
+    "num": 148,
+    "name": "Scripps News",
+    "src": "https://content.uplynk.com/channel/4bb4901b934c4e029fd4c1abfc766c37.m3u8"
+  },
+  {
+    "id": "courttv",
+    "num": 149,
+    "name": "Court TV",
+    "src": "https://content.uplynk.com/channel/6c0bd0f94b1d4526a98676e9699a10ef.m3u8"
+  },
+  {
+    "id": "globalnews",
+    "num": 150,
+    "name": "Global News",
+    "src": "https://live.corusdigitaldev.com/groupd/live/49a91e7f-1023-430f-8d66-561055f3d0f7/live.isml/.m3u8"
+  },
+  {
+    "id": "usatoday",
+    "num": 151,
+    "name": "USA Today",
+    "src": "https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg00731-gannettcoinc-usatodaynews-plex/playlist.m3u8"
+  },
+  {
+    "id": "reuters",
+    "num": 152,
+    "name": "Reuters Now",
+    "src": "https://amg00453-reuters-amg00453c1-rakuten-uk-2110.playouts.now.amagi.tv/playlist/amg00453-reuters-reuters-rakutenuk/playlist.m3u8"
+  },
+  {
+    "id": "tv5monde",
+    "num": 153,
+    "name": "TV5Monde Info",
+    "src": "https://ott.tv5monde.com/Content/HLS/Live/channel(info)/index.m3u8"
+  },
+  {
+    "id": "rtve24",
+    "num": 154,
+    "name": "RTVE 24H",
+    "src": "https://ztnr.rtve.es/ztnr/1694255.m3u8"
+  },
+  {
+    "id": "tvrisport",
+    "num": 155,
+    "name": "TVRI Sport",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/SportHD/hls/SportHD.m3u8"
+  },
+  {
+    "id": "plutosport",
+    "num": 156,
+    "name": "Pluto TV Sport",
+    "src": "https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/608030eff4b6f70007e1684c/master.m3u8?deviceId=channel&deviceModel=web&deviceVersion=1.0&appVersion=1.0&deviceType=rokuChannel&deviceMake=rokuChannel&deviceDNT=1&advertisingId=channel&embedPartner=rokuChannel&appName=rokuchannel&is_lat=1&bmodel=bm1&content=channel&platform=web&tags=ROKU_CONTENT_TAGS&coppa=false&content_type=livefeed&rdid=channel&genre=ROKU_ADS_CONTENT_GENRE&content_rating=ROKU_ADS_CONTENT_RATING&studio_id=viacom&channel_id=channel"
+  },
+  {
+    "id": "tvri_kalteng",
+    "num": 157,
+    "name": "TVRI Kalimantan Tengah",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Kalteng/hls/Kalteng.m3u8"
+  },
+  {
+    "id": "tvri_jambi",
+    "num": 158,
+    "name": "TVRI Jambi",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Jambi/hls/Jambi.m3u8"
+  },
+  {
+    "id": "tvri_maluku",
+    "num": 159,
+    "name": "TVRI Maluku",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Ambon/hls/Ambon.m3u8"
+  },
+  {
+    "id": "tvri_kalsel",
+    "num": 160,
+    "name": "TVRI Kalimantan Selatan",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Kalsel/hls/Kalsel.m3u8"
+  },
+  {
+    "id": "tvri_pabar",
+    "num": 161,
+    "name": "TVRI Papua Barat",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Pabar/hls/Pabar.m3u8"
+  },
+  {
+    "id": "tvri_sulbar",
+    "num": 162,
+    "name": "TVRI Sulawesi Barat",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Sulbar/hls/Sulbar.m3u8"
+  },
+  {
+    "id": "tvri_sumbar",
+    "num": 163,
+    "name": "TVRI Sumatera Barat",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Sumbar/hls/Sumbar.m3u8"
+  },
+  {
+    "id": "tvri_jogja",
+    "num": 164,
+    "name": "TVRI Yogyakarta",
+    "src": "https://ott-balancer.tvri.go.id/live/eds/Jogjakarta/hls/Jogjakarta.m3u8"
   }
 ]

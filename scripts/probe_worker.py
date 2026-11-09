@@ -26,9 +26,10 @@ CHANNELS_FILE = os.path.join(PUBLIC_DIR, "channels.json")
 
 os.makedirs(THUMBS_DIR, exist_ok=True)
 
+# Plain browser UA only — the probe checks OPEN reachability, so it must not
+# send any Referer/UA that impersonates another client (same rule as /stream).
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Referer": "https://www.dens.tv/"
 }
 
 def load_channels():

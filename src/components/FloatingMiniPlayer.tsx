@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import type { Channel } from "../data";
 import { ChannelBug, cx, LiveDot } from "./ui";
+import { playUrl } from "../live/playUrl";
 
 type Props = {
   ch: Channel;
@@ -39,26 +40,24 @@ export default function FloatingMiniPlayer({
   const [hovered, setHovered] = useState(false);
 
   const sources =
-    ch.sources && ch.sources.length > 0 ? ch.sources : [{ label: "Server 1", url: ch.src }];
+    ch.sources && ch.sources.length > 0
+      ? ch.sources
+      : [{ label: "Server 1", url: ch.src, relay: ch.relay }];
   const safeSourceIndex = Math.min(Math.max(0, sourceIndex), sources.length - 1);
   const activeSource = sources[safeSourceIndex] ?? sources[0]!;
   const activeUrl = activeSource.url;
 
-  // Stream playback
+  // Stream playback — no-CORS / plain-http sources route through /stream.
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     const hls = new Hls({ autoStartLoad: true });
-    const source =
-      proxy && !activeUrl.startsWith("/")
-        ? `/stream?url=${encodeURIComponent(activeUrl)}`
-        : activeUrl;
-    hls.loadSource(source);
+    hls.loadSource(playUrl(activeUrl, { proxy, relay: activeSource.relay ?? false }));
     hls.attachMedia(video);
     return () => {
       hls.destroy();
     };
-  }, [activeUrl, proxy]);
+  }, [activeUrl, activeSource.relay, proxy]);
 
   useEffect(() => {
     const video = videoRef.current;

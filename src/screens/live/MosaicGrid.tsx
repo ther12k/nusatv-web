@@ -4,6 +4,7 @@ import { Play, Star } from "lucide-react";
 import { imgFor, type Channel } from "../../data";
 import { Bar, ChannelBug, cx, LiveDot } from "../../components/ui";
 import { useChannelStatus } from "../../live/useChannelStatus";
+import { playUrl } from "../../live/playUrl";
 import type { MosaicCount } from "../../live/model";
 
 type Props = {
@@ -18,18 +19,28 @@ type Props = {
 
 const REAL_TILES = 4; // browsers choke on 9 simultaneous decodes — cap real playback
 
-function TileVideo({ src, live, proxy = false }: { src: string; live: boolean; proxy?: boolean }) {
+function TileVideo({
+  src,
+  live,
+  proxy = false,
+  relay = false,
+}: {
+  src: string;
+  live: boolean;
+  proxy?: boolean;
+  relay?: boolean;
+}) {
   const ref = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
     const video = ref.current;
     if (!video || !live) return;
     const hls = new Hls({ autoStartLoad: true });
-    hls.loadSource(proxy && !src.startsWith("/") ? `/stream?url=${encodeURIComponent(src)}` : src);
+    hls.loadSource(playUrl(src, { proxy, relay }));
     hls.attachMedia(video);
     return () => {
       hls.destroy();
     };
-  }, [src, live, proxy]);
+  }, [src, live, proxy, relay]);
   if (!live) {
     return null; // the poster <img> already renders beneath
   }
@@ -79,7 +90,7 @@ export default function MosaicGrid({ channels, activeId, count, favs, proxy = fa
             />
             {tileIndex < REAL_TILES && (
               <div className="absolute inset-0">
-                <TileVideo src={c.src} live proxy={proxy} />
+                <TileVideo src={c.src} live proxy={proxy} relay={c.relay ?? false} />
               </div>
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/25 to-ink/20" />

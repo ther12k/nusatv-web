@@ -125,7 +125,7 @@ export function saveLast(id: string) {
   }
 }
 
-export const CATS = ["All", "Favourites", "Indonesia", "Internasional", "Sains", "Olahraga", "TVRI", "Test"] as const;
+export const CATS = ["All", "Favourites", "Indonesia", "Daerah", "Religius", "Musik", "Internasional", "Sains", "Olahraga", "Film", "Dokumenter", "Lifestyle", "TVRI", "Test"] as const;
 export type CatId = (typeof CATS)[number];
 
 /* ------------------------------------------------- user playlist (m3u) */

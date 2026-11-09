@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Hls from "hls.js";
 import {
   Captions,
@@ -14,6 +14,7 @@ import {
 import { hhmm, imgFor, signalFor, type Channel } from "../../data";
 import { ChannelBug, cx, LiveDot } from "../../components/ui";
 import { useChannelStatus } from "../../live/useChannelStatus";
+import { playUrl } from "../../live/playUrl";
 
 type Props = {
   ch: Channel;
@@ -121,29 +122,42 @@ export default function PlayerStage({
   }, [ch.name, ch.cat, livePoster, playing, onTogglePlay]);
 
 
-  const sources = ch.sources && ch.sources.length > 0
-    ? ch.sources
-    : [{ label: "Server 1", url: ch.src }];
+  // Stable identity per channel: a fresh array every render would re-run the
+  // HLS effect and restart playback mid-stream.
+  const sources = useMemo(
+    () =>
+      ch.sources && ch.sources.length > 0
+        ? ch.sources
+        : [{ label: "Server 1", url: ch.src, relay: ch.relay }],
+    [ch],
+  );
   const safeSourceIndex = Math.min(Math.max(0, sourceIndex), sources.length - 1);
   const activeSource = sources[safeSourceIndex] ?? sources[0]!;
   const activeUrl = activeSource.url;
+  const activeRelay = activeSource.relay ?? false;
+  const exhaustedRef = useRef(false);
 
   // REAL playback: hls.js attaches the broadcaster's own HLS endpoint
   // to the video element behind the design's chrome. Muted autoplay
   // (browser policy); the mute button unmutes with a user gesture.
+  // playUrl() auto-routes no-CORS / plain-http sources through /stream.
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+    exhaustedRef.current = false;
     const hls = new Hls({ autoStartLoad: true });
-    const source =
-      proxy && !activeUrl.startsWith("/")
-        ? `/stream?url=${encodeURIComponent(activeUrl)}`
-        : activeUrl;
-    hls.loadSource(source);
+    hls.loadSource(playUrl(activeUrl, { proxy, relay: activeRelay }));
     hls.attachMedia(video);
+    hls.on(Hls.Events.FRAG_LOADED, () => {
+      exhaustedRef.current = false;
+      video.removeAttribute("data-hls-error");
+    });
     hls.on(Hls.Events.ERROR, (_e, data) => {
       if (!data.fatal) return;
-      if (sources.length > 1 && onSourceChange) {
+      // Cycle to the next mirror at most once around; after every source has
+      // failed, stop retrying (they will all keep failing) and surface it.
+      if (sources.length > 1 && onSourceChange && !exhaustedRef.current) {
+        exhaustedRef.current = true;
         console.warn(`HLS error on ${activeSource.label}, auto-switching server...`);
         onSourceChange((safeSourceIndex + 1) % sources.length);
       } else {
@@ -153,7 +167,7 @@ export default function PlayerStage({
     return () => {
       hls.destroy();
     };
-  }, [activeUrl, proxy, safeSourceIndex, sources.length, onSourceChange]);
+  }, [activeUrl, activeRelay, proxy, ch.id, safeSourceIndex, sources.length, onSourceChange, activeSource.label]);
 
   useEffect(() => {
     const video = videoRef.current;

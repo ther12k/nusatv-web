@@ -8,6 +8,15 @@ import LayoutPanel from "./live/LayoutPanel";
 type Row = { label: string; hint?: string; control: ReactNode };
 type Panel = { title: string; note?: string; rows: Row[] };
 
+/** Public community playlists — all free lists, loaded on demand. */
+const PRESETS: { label: string; url: string }[] = [
+  { label: "IPTV-org Indonesia", url: "https://iptv-org.github.io/iptv/countries/id.m3u" },
+  { label: "DhanyTV (~890 Ch)", url: "https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv.m3u" },
+  { label: "MGI24 Indonesia (128 Ch)", url: "https://mgi24.github.io/tvdigital/idwork.m3u" },
+  { label: "RiotRyulianto ID", url: "https://raw.githubusercontent.com/riotryulianto/iptv-playlists/main/playlist.m3u" },
+  { label: "Free-TV Global (~2k Ch)", url: "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8" },
+];
+
 function Panel({ p }: { p: Panel }) {
   return (
     <section className="overflow-hidden rounded-lg bg-panel ring-1 ring-line">
@@ -90,38 +99,26 @@ export default function Settings() {
       rows: [
         {
           label: "1-Click community presets",
-          hint: "Quickly load popular community playlists without typing long URLs.",
+          hint: "Quickly load popular community playlists without typing long URLs. Channels needing another app's credentials simply won't play — the app never fakes them.",
           control: (
             <div className="flex flex-wrap gap-2">
-              <GhostButton
-                onClick={() => {
-                  setPlUrl("https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv.m3u");
-                  setPlBusy(true);
-                  setPlMsg(null);
-                  loadPlaylist("https://raw.githubusercontent.com/dhasap/dhanytv/main/dhanytv.m3u").then((r) => {
-                    setPlBusy(false);
-                    say(r);
-                  });
-                }}
-                className="text-[12px]"
-              >
-                <Globe size={13} className="text-signal-lt" /> DhanyTV (~890 Ch)
-              </GhostButton>
-              <GhostButton
-                onClick={() => {
-                  const u = "https://iptv-org.github.io/iptv/countries/id.m3u";
-                  setPlUrl(u);
-                  setPlBusy(true);
-                  setPlMsg(null);
-                  loadPlaylist(u).then((r) => {
-                    setPlBusy(false);
-                    say(r);
-                  });
-                }}
-                className="text-[12px]"
-              >
-                <Globe size={13} className="text-signal-lt" /> IPTV-org Indonesia
-              </GhostButton>
+              {PRESETS.map((p) => (
+                <GhostButton
+                  key={p.url}
+                  onClick={() => {
+                    setPlUrl(p.url);
+                    setPlBusy(true);
+                    setPlMsg(null);
+                    loadPlaylist(p.url).then((r) => {
+                      setPlBusy(false);
+                      say(r);
+                    });
+                  }}
+                  className="text-[12px]"
+                >
+                  <Globe size={13} className="text-signal-lt" /> {p.label}
+                </GhostButton>
+              ))}
             </div>
           ),
         },
