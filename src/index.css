@@ -1,0 +1,241 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* equipment black + broadcast signal blue */
+  --color-ink: #08090b;
+  --color-panel: #121417;
+  --color-raised: #1a1e24;
+  --color-line: #242931;
+  --color-fg: #f4f6f8;
+  --color-mute: #8b949f;
+  --color-dim: #5c646e;
+  --color-signal: #0e6bff;
+  --color-signal-lt: #4e95ff;
+  --color-signal-dk: #0a47b8;
+  --color-ember: #ff6b1a;
+  --color-live: #ff3b30;
+
+  --animate-rise: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-fade: fade 0.4s ease both;
+  --animate-pop: pop 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-sheet: sheet 0.36s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-blink: blink 1.6s ease-in-out infinite;
+  --animate-drift: drift 22s ease-in-out infinite alternate;
+  --animate-zap: zap 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-tune: tune 0.42s linear both;
+  --animate-snow: snow 0.14s steps(2) infinite;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes sheet {
+    from {
+      opacity: 0;
+      transform: translateY(32px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+  @keyframes drift {
+    from {
+      transform: scale(1.04) translate3d(0, 0, 0);
+    }
+    to {
+      transform: scale(1.1) translate3d(-1.5%, -1%, 0);
+    }
+  }
+  @keyframes zap {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes tune {
+    0% {
+      opacity: 0.15;
+      filter: contrast(1.8) saturate(0);
+    }
+    40% {
+      opacity: 0.55;
+      filter: contrast(1.4) saturate(0.2);
+    }
+    100% {
+      opacity: 0;
+      filter: none;
+    }
+  }
+  @keyframes snow {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-2%, 3%, 0);
+    }
+  }
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: -0.03em;
+  }
+  button,
+  input,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+  ::selection {
+    background: var(--color-signal);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-signal-lt);
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  .no-bar {
+    scrollbar-width: none;
+  }
+  .no-bar::-webkit-scrollbar {
+    display: none;
+  }
+  .thin-bar {
+    scrollbar-width: thin;
+    scrollbar-color: #2c323b transparent;
+  }
+  .thin-bar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .thin-bar::-webkit-scrollbar-thumb {
+    background: #2c323b;
+    border-radius: 999px;
+  }
+  .thin-bar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-mute);
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+  .scrim-l {
+    background: linear-gradient(
+      90deg,
+      #08090b 0%,
+      rgba(8, 9, 11, 0.92) 34%,
+      rgba(8, 9, 11, 0.55) 62%,
+      rgba(8, 9, 11, 0.1) 100%
+    );
+  }
+  .scan {
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0 2px,
+      rgba(0, 0, 0, 0.18) 2px 3px
+    );
+  }
+  .snow {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/></filter><rect width='120' height='120' filter='url(%23n)'/></svg>");
+    background-size: 180px 180px;
+  }
+}
+
+/* film grain over the whole app — the material of a broadcast monitor */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* TV / keyboard navigation: a clear ring on whatever arrows + Enter
+   land on — remotes have no mouse, focus must be visible. */
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+select:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline-offset: 0;
+}

@@ -1,0 +1,268 @@
+import { useEffect, useRef, useState } from "react";
+import Hls from "hls.js";
+import {
+  Captions,
+  Maximize,
+  Pause,
+  Play,
+  Radio,
+  SkipForward,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
+import { hhmm, imgFor, signalFor, type Channel } from "../../data";
+import { ChannelBug, cx, LiveDot } from "../../components/ui";
+
+type Props = {
+  ch: Channel;
+  now: Date;
+  muted: boolean;
+  playing: boolean;
+  zap?: string;
+  fill?: boolean;
+  compact?: boolean;
+  cinema?: boolean;
+  onMute: () => void;
+  onTogglePlay: () => void;
+  onOpen?: () => void;
+  onPrev?: () => void;
+  onNext?: () => void;
+  /** Route through this host's /stream relay (non-CORS hosts). */
+  proxy?: boolean;
+};
+
+export default function PlayerStage({
+  ch,
+  now,
+  muted,
+  playing,
+  zap,
+  fill,
+  compact,
+  cinema,
+  onMute,
+  onTogglePlay,
+  onOpen,
+  onPrev,
+  onNext,
+  proxy = false,
+}: Props) {
+  const [tuning, setTuning] = useState(false);
+  const [chrome, setChrome] = useState(true);
+  const sig = signalFor(ch);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  // REAL playback: hls.js attaches the broadcaster's own HLS endpoint
+  // to the video element behind the design's chrome. Muted autoplay
+  // (browser policy); the mute button unmutes with a user gesture.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const hls = new Hls({ autoStartLoad: true });
+    const source =
+      proxy && !ch.src.startsWith("/")
+        ? `/stream?url=${encodeURIComponent(ch.src)}`
+        : ch.src;
+    hls.loadSource(source);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.ERROR, (_e, data) => {
+      if (!data.fatal) return;
+      video.setAttribute("data-hls-error", data.details);
+    });
+    return () => {
+      hls.destroy();
+    };
+  }, [ch.src, proxy]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = muted;
+    if (playing) void video.play().catch(() => {/* autoplay block — poster shows */});
+    else video.pause();
+  }, [playing, muted, ch.src]);
+
+  useEffect(() => {
+    setTuning(true);
+    const id = window.setTimeout(() => setTuning(false), 420);
+    return () => window.clearTimeout(id);
+  }, [ch.id]);
+
+  useEffect(() => {
+    if (!cinema) return;
+    setChrome(true);
+    const id = window.setTimeout(() => setChrome(false), 2800);
+    return () => window.clearTimeout(id);
+  }, [cinema, ch.id]);
+
+  const bars = Math.round((sig / 100) * 4);
+
+  return (
+    <div
+      id={compact ? undefined : "live-stage"}
+      className={cx(
+        "group/stage relative overflow-hidden bg-panel ring-1 ring-line",
+        fill ? "h-full w-full" : "aspect-video w-full",
+        cinema ? "rounded-none ring-0" : "rounded-lg",
+      )}
+      onMouseMove={() => cinema && setChrome(true)}
+    >
+      <video
+        ref={videoRef}
+        poster={imgFor(ch)}
+        autoPlay
+        muted={muted}
+        playsInline
+        className={cx("h-full w-full object-cover", playing && !tuning && "animate-drift")}
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/10 to-ink/40 opacity-70" />
+      <div className="scan pointer-events-none absolute inset-0 opacity-40 mix-blend-multiply" />
+
+      {tuning && (
+        <div className="snow pointer-events-none absolute inset-0 z-20 animate-tune mix-blend-screen opacity-50" />
+      )}
+
+      {/* top-left identity */}
+      <div
+        className={cx(
+          "absolute top-3 left-3 z-10 flex flex-wrap items-center gap-2 transition-opacity duration-300",
+          cinema && !chrome && "opacity-0",
+        )}
+      >
+        <LiveDot />
+        <span className="rounded bg-ink/75 px-1.5 py-1 font-mono text-[10px] text-white/85 backdrop-blur tnum">
+          CH {ch.num}
+        </span>
+        <ChannelBug ch={ch} size="sm" />
+        {ch.hd && (
+          <span className="rounded-sm bg-ink/75 px-1.5 py-1 font-mono text-[9px] tracking-wider text-white/80 backdrop-blur">
+            {ch.pool === "sport" || ch.pool === "film" ? "4K HDR" : "HD"}
+          </span>
+        )}
+      </div>
+
+      {/* signal + clock */}
+      <div
+        className={cx(
+          "absolute top-3 right-3 z-10 flex items-center gap-3 transition-opacity duration-300",
+          cinema && !chrome && "opacity-0",
+        )}
+      >
+        <span className="hidden items-end gap-[2px] sm:flex" aria-label={`Signal ${sig}%`}>
+          {[1, 2, 3, 4].map((i) => (
+            <span
+              key={i}
+              className={cx("w-[3px] rounded-sm", i <= bars ? "bg-signal-lt" : "bg-white/25")}
+              style={{ height: 4 + i * 3 }}
+            />
+          ))}
+        </span>
+        <span className="rounded bg-ink/75 px-1.5 py-1 font-mono text-[10px] text-white/80 backdrop-blur tnum">
+          {hhmm(now)}
+        </span>
+      </div>
+
+      {/* zap number — like a CRT overlay */}
+      {zap && (
+        <div className="absolute top-12 right-4 z-30 font-mono text-[42px] leading-none font-black tracking-tighter text-white drop-shadow-[0_4px_18px_rgba(0,0,0,.8)] animate-zap sm:text-[64px]">
+          {zap}
+          <span className="animate-blink">_</span>
+        </div>
+      )}
+
+      {tuning && (
+        <div className="absolute inset-0 z-20 flex items-center justify-center">
+          <span className="rounded-md bg-ink/70 px-3 py-1.5 font-mono text-[11px] tracking-[0.18em] text-white/90 uppercase backdrop-blur">
+            Tuning {ch.num}
+          </span>
+        </div>
+      )}
+
+      {/* centre play */}
+      {!compact && (
+        <button
+          onClick={onTogglePlay}
+          className={cx(
+            "absolute inset-0 z-[5] flex items-center justify-center",
+            cinema && !chrome && "opacity-0",
+          )}
+          aria-label={playing ? "Pause" : "Play"}
+        >
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-ink/55 text-white ring-1 ring-white/25 backdrop-blur transition duration-200 hover:scale-105 hover:bg-signal hover:ring-signal sm:h-20 sm:w-20">
+            {playing ? (
+              <Pause size={26} fill="currentColor" strokeWidth={0} />
+            ) : (
+              <Play size={26} fill="currentColor" strokeWidth={0} className="ml-0.5" />
+            )}
+          </span>
+        </button>
+      )}
+
+      {/* transport */}
+      {!compact && (
+        <div
+          className={cx(
+            "absolute inset-x-0 bottom-0 z-10 flex items-center gap-3 px-3.5 pb-3 transition-opacity duration-300 sm:gap-4 sm:px-4",
+            cinema && !chrome && "pointer-events-none opacity-0",
+          )}
+        >
+          <button onClick={onMute} className="text-white/85 hover:text-signal-lt" aria-label={muted ? "Unmute" : "Mute"}>
+            {muted ? <VolumeX size={17} /> : <Volume2 size={17} />}
+          </button>
+          <div className="min-w-0 flex-1">
+            <div className="mb-1.5 flex items-baseline justify-between gap-3">
+              <span className="truncate text-[13px] font-bold">{ch.now}</span>
+              <span className="shrink-0 font-mono text-[10px] tracking-[0.18em] text-white/70">
+                LIVE
+              </span>
+            </div>
+            <div className="h-[4px] w-full overflow-hidden rounded bg-white/15">
+              <div className="h-full w-1/3 animate-pulse rounded bg-red-500/80" />
+            </div>
+          </div>
+          {onPrev && (
+            <button onClick={onPrev} className="hidden text-white/80 hover:text-signal-lt sm:block" aria-label="Previous channel">
+              <SkipForward size={16} className="rotate-180" />
+            </button>
+          )}
+          {onNext && (
+            <button onClick={onNext} className="hidden text-white/80 hover:text-signal-lt sm:block" aria-label="Next channel">
+              <SkipForward size={16} />
+            </button>
+          )}
+          <button className="hidden text-white/80 hover:text-signal-lt sm:block" aria-label="Captions">
+            <Captions size={16} />
+          </button>
+          {onOpen && (
+            <button onClick={onOpen} className="text-white/85 hover:text-signal-lt" aria-label="Fullscreen player">
+              <Maximize size={17} />
+            </button>
+          )}
+        </div>
+      )}
+
+      {compact && (
+        <div className="absolute inset-x-0 bottom-0 z-10 p-2.5">
+          <div className="truncate text-[12px] font-bold">{ch.now}</div>
+          <div className="mt-1.5 h-[3px] w-full overflow-hidden rounded bg-white/15">
+            <div className="h-full w-1/3 animate-pulse rounded bg-red-500/80" />
+          </div>
+        </div>
+      )}
+
+      {cinema && (
+        <div
+          className={cx(
+            "pointer-events-none absolute bottom-16 left-4 z-10 max-w-lg transition-opacity duration-300 sm:bottom-20 sm:left-8",
+            !chrome && "opacity-0",
+          )}
+        >
+          <div className="flex items-center gap-2 font-mono text-[10px] tracking-[0.16em] text-white/60 uppercase">
+            <Radio size={12} /> {ch.name} · {ch.cat}
+          </div>
+          <div className="mt-1 text-2xl leading-none font-black tracking-tight sm:text-4xl">{ch.now}</div>
+        </div>
+      )}
+    </div>
+  );
+}
