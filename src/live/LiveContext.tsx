@@ -49,6 +49,8 @@ type LiveState = {
   setSourceIndex: (chId: string, idx: number) => void;
   miniDismissed: boolean;
   setMiniDismissed: (dismissed: boolean) => void;
+  isScrolledOut: boolean;
+  setScrolledOut: (scrolled: boolean) => void;
 };
 
 function storedToChannels(p: StoredPlaylist): Channel[] {
@@ -209,6 +211,7 @@ export function LiveProvider({ children }: { children: ReactNode }) {
   const [muted, setMuted] = useState<boolean>(false);
   const [sourceIdxMap, setSourceIdxMap] = useState<Record<string, number>>({});
   const [miniDismissed, setMiniDismissed] = useState<boolean>(false);
+  const [isScrolledOut, setScrolledOut] = useState<boolean>(false);
 
   const setSourceIndex = useCallback((chId: string, idx: number) => {
     setSourceIdxMap((prev) => ({ ...prev, [chId]: idx }));
@@ -229,12 +232,13 @@ export function LiveProvider({ children }: { children: ReactNode }) {
       muted, setMuted,
       sourceIdxMap, setSourceIndex,
       miniDismissed, setMiniDismissed,
+      isScrolledOut, setScrolledOut,
     }),
     [
       config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav,
       channels, store, loadPlaylist, importText, loadXtream, removePlaylist,
       proxy, setProxy,
-      playing, muted, sourceIdxMap, setSourceIndex, miniDismissed,
+      playing, muted, sourceIdxMap, setSourceIndex, miniDismissed, isScrolledOut,
     ],
   );
 

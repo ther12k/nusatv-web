@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { List, Pause, Radio, Settings2, SkipForward } from "lucide-react";
+import { List, Pause, PictureInPicture2, Radio, Settings2, SkipForward } from "lucide-react";
 import { CHANNELS, hhmm, type Channel } from "../data";
 import { useLive } from "../live/LiveContext";
 import { CATS, LAYOUTS, type LayoutId } from "../live/model";
@@ -13,11 +13,13 @@ import LayoutPanel from "./live/LayoutPanel";
 type Props = { now: Date };
 
 export default function Live({ now }: Props) {
-  const { config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav, channels, proxy, playing, setPlaying, muted, setMuted, sourceIdxMap, setSourceIndex: setCtxSourceIdx, setMiniDismissed } = useLive();
+  const { config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav, channels, proxy, playing, setPlaying, muted, setMuted, sourceIdxMap, setSourceIndex: setCtxSourceIdx, setMiniDismissed, setScrolledOut } = useLive();
   const [cat, setCat] = useState<string>("All");
   useEffect(() => {
     setMiniDismissed(false);
   }, [setMiniDismissed]);
+
+
   const [query, setQuery] = useState("");
 
 
@@ -112,6 +114,27 @@ export default function Live({ now }: Props) {
   );
 
   const cinema = config.layout === "cinema";
+
+  // YouTube-like in-page floating: when scrolling past the video, dock floating mini-player!
+  useEffect(() => {
+    if (cinema) {
+      setScrolledOut(false);
+      return;
+    }
+    const stageEl = document.getElementById("live-stage");
+    if (!stageEl) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setScrolledOut(!entry.isIntersecting);
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(stageEl);
+    return () => {
+      observer.disconnect();
+      setScrolledOut(false);
+    };
+  }, [cinema, activeId, setScrolledOut]);
 
   /** Layout switching that owns real fullscreen: entering cinema
    *  requests it (from the click/keypress gesture), leaving exits it,
@@ -383,6 +406,19 @@ export default function Live({ now }: Props) {
               className="flex h-9 items-center rounded-md bg-ink/70 px-3 font-mono text-[10px] tracking-wider text-white/80 uppercase ring-1 ring-white/15 backdrop-blur transition hover:bg-signal hover:text-white"
             >
               Exit cinema
+            </button>
+            <button
+              onClick={() => {
+                const v = document.querySelector("#live-stage video") as HTMLVideoElement | null;
+                if (v && document.pictureInPictureEnabled) {
+                  if (document.pictureInPictureElement) void document.exitPictureInPicture();
+                  else void v.requestPictureInPicture();
+                }
+              }}
+              className="flex h-9 items-center gap-1.5 rounded-md bg-ink/70 px-3 text-[12px] font-semibold text-white ring-1 ring-white/15 backdrop-blur transition hover:bg-signal"
+              title="Float video on your screen (Picture-in-Picture)"
+            >
+              <PictureInPicture2 size={13} className="text-signal-lt" /> Float
             </button>
             {sources.length > 1 && (
               <div className="flex items-center gap-1 rounded-md bg-ink/80 p-1 ring-1 ring-white/15 backdrop-blur">

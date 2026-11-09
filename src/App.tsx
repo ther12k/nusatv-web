@@ -18,7 +18,7 @@ function useNow(ms = 15000) {
 
 function Shell() {
   const now = useNow(15000);
-  const { config, channels, activeId, playing, setPlaying, muted, setMuted, proxy, sourceIdxMap, miniDismissed, setMiniDismissed } = useLive();
+  const { config, channels, activeId, playing, setPlaying, muted, setMuted, proxy, sourceIdxMap, miniDismissed, setMiniDismissed, isScrolledOut } = useLive();
   const [screen, setScreen] = useState<ScreenId>("live");
 
   const cinema = screen === "live" && config.layout === "cinema";
@@ -43,7 +43,7 @@ function Shell() {
       </div>
 
       {/* YouTube-like Floating Mini-Player when navigating to Guide, Settings, etc. */}
-      {screen !== "live" && !miniDismissed && (
+      {(screen !== "live" || isScrolledOut) && !miniDismissed && (
         <FloatingMiniPlayer
           ch={channels.find((c) => c.id === activeId) ?? channels[0]!}
           playing={playing}
@@ -53,7 +53,10 @@ function Shell() {
           onTogglePlay={() => setPlaying((p) => !p)}
           onToggleMute={() => setMuted((m) => !m)}
           onExpand={() => {
-            go("live");
+            if (screen !== "live") go("live");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            const stage = document.getElementById("live-stage");
+            stage?.scrollIntoView({ behavior: "smooth", block: "center" });
             setMiniDismissed(false);
           }}
           onClose={() => setMiniDismissed(true)}

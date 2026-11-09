@@ -56,40 +56,70 @@ export default function PlayerStage({
   const [tuning, setTuning] = useState(false);
   const [chrome, setChrome] = useState(true);
 
+  const sig = signalFor(ch);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const { statusMap } = useChannelStatus();
+  const channelStat = statusMap[ch.id];
+  const livePoster = channelStat?.thumb ?? imgFor(ch);
+
   // Native Picture-in-Picture helper
-  const togglePiP = async () => {
+  const togglePiP = async (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     try {
       if (document.pictureInPictureElement) {
         await document.exitPictureInPicture();
       } else if (videoRef.current && document.pictureInPictureEnabled) {
         await videoRef.current.requestPictureInPicture();
       }
-    } catch {
-      // browser blocked or unsupported
+    } catch (err) {
+      console.warn("PiP error:", err);
     }
   };
 
-  // YouTube-like: when switching browser tabs (document.hidden), pop out to PiP if playing!
+  // Register MediaSession + autoPictureInPicture for Chrome/browsers
   useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    try {
+      // Modern Chromium automatic Picture-in-Picture attribute
+      (video as any).autoPictureInPicture = true;
+    } catch {}
+
+    if ("mediaSession" in navigator) {
+      try {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: ch.name,
+          artist: "NusaTV Live",
+          album: ch.cat,
+          artwork: [{ src: livePoster, sizes: "320x180", type: "image/jpeg" }],
+        });
+        navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+
+        // Required by Chrome to allow auto PiP on tab switch:
+        (navigator.mediaSession as any).setActionHandler?.("enterpictureinpicture", async () => {
+          if (document.pictureInPictureElement !== video && document.pictureInPictureEnabled) {
+            await video.requestPictureInPicture();
+          }
+        });
+        navigator.mediaSession.setActionHandler("play", () => onTogglePlay());
+        navigator.mediaSession.setActionHandler("pause", () => onTogglePlay());
+      } catch {}
+    }
+
     const handleVisibilityChange = async () => {
       try {
         if (document.hidden && playing && videoRef.current && document.pictureInPictureEnabled && !document.pictureInPictureElement) {
           await videoRef.current.requestPictureInPicture();
         }
-      } catch {
-        // user interaction required in some browsers
-      }
+      } catch {}
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [playing]);
-  const sig = signalFor(ch);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const { statusMap } = useChannelStatus();
-  const channelStat = statusMap[ch.id];
-  const livePoster = channelStat?.thumb ?? imgFor(ch);
+  }, [ch.name, ch.cat, livePoster, playing, onTogglePlay]);
+
 
   const sources = ch.sources && ch.sources.length > 0
     ? ch.sources
@@ -214,13 +244,22 @@ export default function PlayerStage({
         )}
       </div>
 
-      {/* signal + clock */}
+      {/* signal + clock + float button */}
       <div
         className={cx(
-          "absolute top-3 right-3 z-10 flex items-center gap-2.5 transition-opacity duration-300",
+          "absolute top-3 right-3 z-10 flex items-center gap-2 transition-opacity duration-300",
           cinema && !chrome && "opacity-0",
         )}
       >
+        <button
+          onClick={togglePiP}
+          className="flex items-center gap-1.5 rounded-md bg-ink/80 px-2.5 py-1 font-mono text-[10px] font-semibold tracking-wider text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-signal hover:ring-signal hover:shadow-lg"
+          title="Float video on top of other tabs & apps (Picture-in-Picture)"
+          aria-label="Floating video"
+        >
+          <PictureInPicture2 size={13} className="text-signal-lt" />
+          <span className="hidden sm:inline">Float</span>
+        </button>
         {channelStat && (
           <span
             className={cx(
