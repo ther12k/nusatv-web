@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NusaTV — Live TV for Indonesia &amp; the world</title>
+<meta name="description" content="NusaTV — 164 verified live TV channels in one clean player. Watch in the browser or install the Android TV app. Free, no account, no tracking." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2308090b'/%3E%3Ctext x='6' y='22' font-family='monospace' font-weight='700' font-size='13' fill='%23fff'%3ENU%3C/text%3E%3Crect x='19' y='9' width='8' height='8' rx='2' fill='%230e6bff'/%3E%3C/svg%3E" />
+<style>
+  :root {
+    --ink: #08090b; --panel: #121417; --raised: #1a1e24; --line: #242931;
+    --fg: #f4f6f8; --mute: #8b949f; --dim: #5c646e;
+    --signal: #0e6bff; --signal-lt: #4e95ff; --live: #ff3b30; --ember: #ff6b1a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--ink); color: var(--fg);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* nav */
+  nav { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(12px);
+        background: color-mix(in srgb, var(--ink) 85%, transparent);
+        border-bottom: 1px solid var(--line); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; letter-spacing: -0.03em; font-size: 20px; }
+  .brand .tv { background: var(--signal); color: #fff; border-radius: 4px; padding: 2px 7px; font-size: 14px; }
+  nav a.cta { text-decoration: none; font-size: 13px; font-weight: 600; color: var(--fg);
+              background: var(--signal); padding: 9px 16px; border-radius: 8px; transition: filter .15s; }
+  nav a.cta:hover { filter: brightness(1.15); }
+
+  /* hero */
+  header { padding: 72px 0 56px; text-align: center; position: relative; overflow: hidden; }
+  header::before { content: ""; position: absolute; inset: -40% -20% auto; height: 130%;
+    background: radial-gradient(ellipse at 50% 0%, rgba(14,107,255,.22), transparent 60%); pointer-events: none; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: .12em;
+          text-transform: uppercase; color: var(--signal-lt); border: 1px solid color-mix(in srgb, var(--signal) 45%, transparent);
+          border-radius: 99px; padding: 6px 14px; background: color-mix(in srgb, var(--signal) 10%, transparent); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--live); animation: blink 1.6s ease-in-out infinite; }
+  @keyframes blink { 50% { opacity: .35; } }
+  h1 { font-size: clamp(38px, 7vw, 64px); font-weight: 900; letter-spacing: -0.04em; line-height: 1.05; margin: 22px 0 14px; }
+  h1 em { font-style: normal; color: var(--signal-lt); }
+  .sub { color: var(--mute); max-width: 56ch; margin: 0 auto 30px; font-size: clamp(15px, 2.2vw, 18px); }
+  .btns { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .btn { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; font-weight: 700;
+         padding: 14px 24px; border-radius: 10px; font-size: 15px; transition: transform .12s, filter .15s; }
+  .btn:hover { transform: translateY(-1px); filter: brightness(1.12); }
+  .btn.primary { background: var(--signal); color: #fff; box-shadow: 0 12px 34px -12px rgba(14,107,255,.8); }
+  .btn.ghost { background: var(--raised); color: var(--fg); border: 1px solid var(--line); }
+  .btn svg { flex: none; }
+  .fineprint { margin-top: 18px; font-size: 12px; color: var(--dim); }
+
+  /* stats */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 48px 0 8px; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 10px; text-align: center; }
+  .stat b { display: block; font-size: clamp(22px, 3.4vw, 30px); font-weight: 900; letter-spacing: -.02em; }
+  .stat span { font-size: 11px; color: var(--dim); text-transform: uppercase; letter-spacing: .12em; }
+  @media (max-width: 640px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+
+  /* sections */
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: clamp(24px, 4vw, 34px); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 8px; }
+  .lead { color: var(--mute); max-width: 62ch; margin-bottom: 34px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 860px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+  .card .ico { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center;
+               justify-content: center; background: color-mix(in srgb, var(--signal) 16%, transparent);
+               color: var(--signal-lt); margin-bottom: 14px; }
+  .card h3 { font-size: 15.5px; font-weight: 700; margin-bottom: 6px; }
+  .card p { font-size: 13.5px; color: var(--mute); }
+
+  .cats { display: flex; flex-wrap: wrap; gap: 9px; }
+  .cat { font-size: 13px; font-weight: 600; border: 1px solid var(--line); background: var(--panel);
+         border-radius: 99px; padding: 8px 15px; color: var(--fg); }
+  .cat b { color: var(--signal-lt); font-weight: 800; }
+
+  /* install steps */
+  ol.steps { list-style: none; counter-reset: s; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 760px) { ol.steps { grid-template-columns: 1fr; } }
+  ol.steps li { counter-increment: s; background: var(--panel); border: 1px solid var(--line);
+                border-radius: 14px; padding: 20px; position: relative; }
+  ol.steps li::before { content: counter(s, decimal-leading-zero); position: absolute; top: 18px; right: 18px;
+    font-family: ui-monospace, monospace; font-size: 13px; color: var(--dim); }
+  ol.steps h3 { font-size: 14.5px; margin-bottom: 5px; }
+  ol.steps p { font-size: 13px; color: var(--mute); }
+  code.k { font-family: ui-monospace, monospace; font-size: 12px; background: var(--raised);
+           border: 1px solid var(--line); border-radius: 5px; padding: 1px 6px; }
+
+  footer { border-top: 1px solid var(--line); padding: 34px 0 46px; color: var(--dim); font-size: 13px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center; }
+  footer a { color: var(--mute); text-decoration: none; }
+  footer a:hover { color: var(--fg); }
+  .legal { max-width: 72ch; margin-top: 14px; font-size: 11.5px; line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand">NU <span class="tv">TV</span></div>
+    <a class="cta" href="https://tv.rizeva.my.id/">Watch now</a>
+  </div>
+</nav>
+
+<header class="wrap">
+  <span class="pill"><span class="dot"></span> 164 channels · live now</span>
+  <h1>Live TV that just <em>works</em>.</h1>
+  <p class="sub">
+    NusaTV is a free, open player for verified public live streams — Indonesia's national and
+    regional broadcasters, TVRI nationwide, and the world's news, sport and movie channels.
+    No account. No tracking. Works in any browser, on your phone, and on Android TV.
+  </p>
+  <div class="btns">
+    <a class="btn primary" href="https://tv.rizeva.my.id/">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v14l11-7-11-7z"/></svg>
+      Watch in browser
+    </a>
+    <a class="btn ghost" href="https://github.com/ther12k/nusatv-web/releases/download/tv-v0.1.0/NusaTV-AndroidTV-v0.1.0.apk">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Android TV APK · 7.6 MB
+    </a>
+  </div>
+  <p class="fineprint">Web app: tv.rizeva.my.id · APK: debug build, sideload via file manager</p>
+
+  <div class="stats">
+    <div class="stat"><b>164</b><span>channels</span></div>
+    <div class="stat"><b>12</b><span>categories</span></div>
+    <div class="stat"><b>100%</b><span>free &amp; open</span></div>
+    <div class="stat"><b>0</b><span>accounts needed</span></div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="wrap">
+    <h2>Built like a proper TV</h2>
+    <p class="lead">Everything you'd expect from a broadcast player — tuned for phones, desktops and the ten-foot couch experience.</p>
+    <div class="grid">
+      <div class="card">
+        <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="m17 2-5 5-5-5"/></svg></div>
+        <h3>Real-time channel health</h3>
+        <p>A server probe samples every channel and grabs a live frame — the list shows last-seen thumbnails, latency and online/offline signal before you tune.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="18" rx="1"/><path d="M14 3h7v5h-7zM14 12h7v9h-7z"/></svg></div>
+        <h3>Category accordions</h3>
+        <p>Twelve collapsible groups — Indonesia, Daerah, TVRI, Internasional, Film, Olahraga and more — with the on-air group always flagged.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M5 9h14l-1.5 12.5a1 1 0 0 1-1 .5h-9a1 1 0 0 1-1-.5L5 9z"/></svg></div>
+        <h3>Multi-server failover</h3>
+        <p>Channels with multiple mirrors switch servers automatically when one dies — press <span class="mono">S</span> to cycle them yourself.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
+        <h3>Remote-first TV app</h3>
+        <p>The Android TV build walks the same accordion with the D-pad: ↑↓ browse, OK collapses groups or plays, CH+/CH− zap while watching.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+        <h3>Last-frame loading</h3>
+        <p>Tuning shows the probe's most recent frame with a spinner — no black screens while a stream buffers.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h10a2 2 0 0 1 2 2v12a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2z"/><path d="M16 8h4v12a2 2 0 0 1-2 2"/></svg></div>
+        <h3>Bring your own playlist</h3>
+        <p>Load any m3u you legitimately hold — URL, file, paste or Xtream Codes. Your list stays on your device.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="channels">
+  <div class="wrap">
+    <h2>What's on</h2>
+    <p class="lead">Every bundled stream is verified open and free — broadcasters' own public endpoints, checked without any header spoofing.</p>
+    <div class="cats">
+      <span class="cat"><b>34</b> Indonesia</span>
+      <span class="cat"><b>33</b> Daerah</span>
+      <span class="cat"><b>31</b> TVRI regions</span>
+      <span class="cat"><b>27</b> Internasional</span>
+      <span class="cat"><b>12</b> Film</span>
+      <span class="cat"><b>9</b> Religius</span>
+      <span class="cat"><b>4</b> Musik</span>
+      <span class="cat"><b>3</b> Olahraga</span>
+      <span class="cat"><b>3</b> Sains &amp; Dokumenter</span>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <h2>Install on Android TV</h2>
+    <p class="lead">A ten-foot remote-first build of the same player — leanback launcher, D-pad everywhere, fullscreen zap.</p>
+    <ol class="steps">
+      <li><h3>Download the APK</h3><p>Grab <span class="mono">NusaTV-AndroidTV-v0.1.0.apk</span> from the <a href="https://github.com/ther12k/nusatv-web/releases" style="color:var(--signal-lt)">releases page</a> onto a USB stick or download it directly on the TV's browser.</p></li>
+      <li><h3>Allow unknown apps</h3><p>Settings → Device Preferences → Security &amp; Restrictions → Unknown sources, then enable your file manager.</p></li>
+      <li><h3>Install &amp; tune</h3><p>Open the APK from the file manager, install, and launch NusaTV from the TV launcher. First channel plays on <span class="mono">OK</span>.</p></li>
+    </ol>
+    <p style="margin-top:26px">
+      <a class="btn primary" href="https://github.com/ther12k/nusatv-web/releases/download/tv-v0.1.0/NusaTV-AndroidTV-v0.1.0.apk">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download APK
+      </a>
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <div class="brand" style="font-size:16px">NU <span class="tv">TV</span></div>
+      <p class="legal">
+        NusaTV is a generic player for publicly available streams; it bundles no credentials and
+        impersonates no client. Channel availability depends on each broadcaster's public endpoint.
+        APK is a debug build — install at your own discretion.
+      </p>
+    </div>
+    <div style="text-align:right">
+      <p><a href="https://tv.rizeva.my.id/">tv.rizeva.my.id</a> · <a href="https://github.com/ther12k/nusatv-web">GitHub</a> · <a href="https://github.com/ther12k/nusatv-web/releases">Releases</a></p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
