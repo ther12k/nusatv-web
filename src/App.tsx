@@ -4,6 +4,7 @@ import TopBar from "./components/TopBar";
 import Live from "./screens/Live";
 import Guide from "./screens/Guide";
 import Settings from "./screens/Settings";
+import FloatingMiniPlayer from "./components/FloatingMiniPlayer";
 import { LiveProvider, useLive } from "./live/LiveContext";
 
 function useNow(ms = 15000) {
@@ -17,7 +18,7 @@ function useNow(ms = 15000) {
 
 function Shell() {
   const now = useNow(15000);
-  const { config } = useLive();
+  const { config, channels, activeId, playing, setPlaying, muted, setMuted, proxy, sourceIdxMap, miniDismissed, setMiniDismissed } = useLive();
   const [screen, setScreen] = useState<ScreenId>("live");
 
   const cinema = screen === "live" && config.layout === "cinema";
@@ -41,7 +42,23 @@ function Shell() {
         </main>
       </div>
 
-
+      {/* YouTube-like Floating Mini-Player when navigating to Guide, Settings, etc. */}
+      {screen !== "live" && !miniDismissed && (
+        <FloatingMiniPlayer
+          ch={channels.find((c) => c.id === activeId) ?? channels[0]!}
+          playing={playing}
+          muted={muted}
+          proxy={proxy}
+          sourceIndex={sourceIdxMap[activeId] ?? 0}
+          onTogglePlay={() => setPlaying((p) => !p)}
+          onToggleMute={() => setMuted((m) => !m)}
+          onExpand={() => {
+            go("live");
+            setMiniDismissed(false);
+          }}
+          onClose={() => setMiniDismissed(true)}
+        />
+      )}
     </div>
   );
 }

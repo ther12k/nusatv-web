@@ -4,6 +4,7 @@ import {
   Captions,
   Maximize,
   Pause,
+  PictureInPicture2,
   Play,
   Radio,
   SkipForward,
@@ -54,6 +55,36 @@ export default function PlayerStage({
 }: Props) {
   const [tuning, setTuning] = useState(false);
   const [chrome, setChrome] = useState(true);
+
+  // Native Picture-in-Picture helper
+  const togglePiP = async () => {
+    try {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      } else if (videoRef.current && document.pictureInPictureEnabled) {
+        await videoRef.current.requestPictureInPicture();
+      }
+    } catch {
+      // browser blocked or unsupported
+    }
+  };
+
+  // YouTube-like: when switching browser tabs (document.hidden), pop out to PiP if playing!
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      try {
+        if (document.hidden && playing && videoRef.current && document.pictureInPictureEnabled && !document.pictureInPictureElement) {
+          await videoRef.current.requestPictureInPicture();
+        }
+      } catch {
+        // user interaction required in some browsers
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [playing]);
   const sig = signalFor(ch);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const { statusMap } = useChannelStatus();
@@ -296,6 +327,14 @@ export default function PlayerStage({
           )}
           <button className="hidden text-white/80 hover:text-signal-lt sm:block" aria-label="Captions">
             <Captions size={16} />
+          </button>
+          <button
+            onClick={togglePiP}
+            className="hidden text-white/85 hover:text-signal-lt sm:block"
+            title="Floating window (Picture-in-Picture)"
+            aria-label="Picture in picture"
+          >
+            <PictureInPicture2 size={17} />
           </button>
           {onOpen && (
             <button onClick={onOpen} className="text-white/85 hover:text-signal-lt" aria-label="Fullscreen player">

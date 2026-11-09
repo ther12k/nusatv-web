@@ -40,6 +40,15 @@ type LiveState = {
   /** Route non-CORS stream playback through this host's /stream relay. */
   proxy: boolean;
   setProxy: (on: boolean) => void;
+  /** Global playback controls for floating mini-player & app tabs */
+  playing: boolean;
+  setPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  muted: boolean;
+  setMuted: React.Dispatch<React.SetStateAction<boolean>>;
+  sourceIdxMap: Record<string, number>;
+  setSourceIndex: (chId: string, idx: number) => void;
+  miniDismissed: boolean;
+  setMiniDismissed: (dismissed: boolean) => void;
 };
 
 function storedToChannels(p: StoredPlaylist): Channel[] {
@@ -196,6 +205,15 @@ export function LiveProvider({ children }: { children: ReactNode }) {
     setStore(null);
   }, []);
 
+  const [playing, setPlaying] = useState<boolean>(true);
+  const [muted, setMuted] = useState<boolean>(false);
+  const [sourceIdxMap, setSourceIdxMap] = useState<Record<string, number>>({});
+  const [miniDismissed, setMiniDismissed] = useState<boolean>(false);
+
+  const setSourceIndex = useCallback((chId: string, idx: number) => {
+    setSourceIdxMap((prev) => ({ ...prev, [chId]: idx }));
+  }, []);
+
   const [proxy, setProxyState] = useState<boolean>(() => loadProxy());
   const setProxy = useCallback((on: boolean) => {
     saveProxy(on);
@@ -207,8 +225,17 @@ export function LiveProvider({ children }: { children: ReactNode }) {
       config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav,
       channels, playlistUrl: store?.url ?? null, loadPlaylist, importText, loadXtream, removePlaylist,
       proxy, setProxy,
+      playing, setPlaying,
+      muted, setMuted,
+      sourceIdxMap, setSourceIndex,
+      miniDismissed, setMiniDismissed,
     }),
-    [config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav, channels, store, loadPlaylist, importText, loadXtream, removePlaylist, proxy, setProxy],
+    [
+      config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav,
+      channels, store, loadPlaylist, importText, loadXtream, removePlaylist,
+      proxy, setProxy,
+      playing, muted, sourceIdxMap, setSourceIndex, miniDismissed,
+    ],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

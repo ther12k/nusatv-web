@@ -13,12 +13,13 @@ import LayoutPanel from "./live/LayoutPanel";
 type Props = { now: Date };
 
 export default function Live({ now }: Props) {
-  const { config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav, channels, proxy } = useLive();
+  const { config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav, channels, proxy, playing, setPlaying, muted, setMuted, sourceIdxMap, setSourceIndex: setCtxSourceIdx, setMiniDismissed } = useLive();
   const [cat, setCat] = useState<string>("All");
+  useEffect(() => {
+    setMiniDismissed(false);
+  }, [setMiniDismissed]);
   const [query, setQuery] = useState("");
-  const [muted, setMuted] = useState(false);
-  const [playing, setPlaying] = useState(true);
-  const [sourceIdxMap, setSourceIdxMap] = useState<Record<string, number>>({});
+
 
   const flash = useCallback((msg: string) => {
     setToast(msg);
@@ -57,9 +58,9 @@ export default function Live({ now }: Props) {
   const currentSourceIndex = sourceIdxMap[ch.id] ?? 0;
 
   const setSourceIndex = useCallback((idx: number) => {
-    setSourceIdxMap((prev) => ({ ...prev, [ch.id]: idx }));
+    setCtxSourceIdx(ch.id, idx);
     flash(`⚡ ${ch.name} · ${sources[idx]?.label ?? `Server ${idx + 1}`}`);
-  }, [ch.id, ch.name, sources, flash]);
+  }, [ch.id, ch.name, sources, flash, setCtxSourceIdx]);
 
   const nextSource = useCallback(() => {
     if (sources.length <= 1) return;
