@@ -1,5 +1,5 @@
 import { useRef, useState, type ReactNode } from "react";
-import { Check, ClipboardPaste, Globe, ListPlus, RotateCcw, Save, Server, Trash2, Type, Upload } from "lucide-react";
+import { Check, ClipboardPaste, Globe, ListPlus, RefreshCw, RotateCcw, Save, Server, Tv, Trash2, Type, Upload } from "lucide-react";
 import { EPG_CACHE, LANGS } from "../data";
 import { Chip, GhostButton, PrimaryButton, ScreenHead, Toggle, cx } from "../components/ui";
 import { useLive } from "../live/LiveContext";
@@ -18,6 +18,16 @@ const PRESETS: { label: string; url: string }[] = [
   { label: "RiotRyulianto ID", url: "https://raw.githubusercontent.com/riotryulianto/iptv-playlists/main/playlist.m3u" },
   { label: "Free-TV Global (~2k Ch)", url: "https://raw.githubusercontent.com/Free-TV/IPTV/master/playlist.m3u8" },
 ];
+
+/** "just now" / "3m ago" / "2h ago" for the feed's last-checked time. */
+function timeAgo(ts: number | null): string {
+  if (!ts) return "never";
+  const s = Math.max(0, (Date.now() - ts) / 1000);
+  if (s < 60) return "just now";
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
+}
 
 function Panel({ p }: { p: Panel }) {
   return (
@@ -55,7 +65,8 @@ export default function Settings() {
   const [notif, setNotif] = useState(true);
   const [lock, setLock] = useState(false);
   const [saved, setSaved] = useState(false);
-  const { playlistUrl, loadPlaylist, importText, loadXtream, removePlaylist, proxy, setProxy } = useLive();
+  const { playlistUrl, loadPlaylist, importText, loadXtream, removePlaylist, proxy, setProxy, feed, refreshFeed, setFeedOff, setFeedUrl } = useLive();
+  const [feedUrlLocal, setFeedUrlLocal] = useState(() => feed.url);
   const [plUrl, setPlUrl] = useState("");
   const [plText, setPlText] = useState("");
   const [xtHost, setXtHost] = useState("");
@@ -95,6 +106,60 @@ export default function Settings() {
     "h-9 cursor-pointer rounded-md bg-raised px-3 text-[12.5px] font-semibold outline-none ring-1 ring-line transition hover:ring-dim focus:ring-signal";
 
   const panels: Panel[] = [
+    {
+      title: "Channel source",
+      note: "bittv feed",
+      rows: [
+        {
+          label: "BitTV-style live feed",
+          hint:
+            feed.mode === "feed"
+              ? `Showing ${feed.count} channels from the third-party feed (updated ${timeAgo(feed.fetchedAt)}). It replaces the built-in lineup while it is reachable.`
+              : `Showing the built-in lineup (${feed.count} channels). ${feed.reason ?? ""} A live feed replaces the built-in lineup whenever it is reachable.`,
+          control: (
+            <div className="flex items-center gap-2">
+              <Server size={15} className={cx("transition-colors", feed.mode === "feed" ? "text-signal-lt" : "text-dim")} />
+              <span className={cx("font-mono text-[12px] tnum", feed.mode === "feed" ? "text-signal-lt" : "text-mute")}>
+                {feed.mode === "feed" ? "FEED LIVE" : "BUILT-IN"}
+              </span>
+            </div>
+          ),
+        },
+        {
+          label: "Use the third-party feed",
+          hint: "Off = always show the built-in 164-channel lineup. On = fetch the feed at startup and use it when reachable (built-in list is the automatic fallback).",
+          control: <Toggle on={!feed.disabled} onChange={(on) => setFeedOff(!on)} label={feed.disabled ? "Feed off" : "Feed on"} />,
+        },
+        {
+          label: "Refresh feed now",
+          hint: `Last checked ${timeAgo(feed.fetchedAt)} · ${feed.url}`,
+          control: (
+            <GhostButton onClick={() => !feed.disabled && refreshFeed()}>
+              <RefreshCw size={14} className={cx(feed.loading && "animate-spin")} /> {feed.loading ? "Fetching…" : "Refresh"}
+            </GhostButton>
+          ),
+        },
+        {
+          label: "Feed URL",
+          hint: "Defaults to the BitTV endpoint. Point it at any JSON channel feed (a list of {name, url/source, group/country} objects).",
+          control: (
+            <div className="flex w-full max-w-md flex-col gap-2 sm:flex-row sm:items-center">
+              <input
+                value={feedUrlLocal}
+                onChange={(e) => setFeedUrlLocal(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && setFeedUrl(feedUrlLocal)}
+                placeholder="https://…/feed.json"
+                aria-label="Feed URL"
+                className="h-9 w-full rounded-md bg-raised px-3 font-mono text-[11.5px] outline-none ring-1 ring-line transition placeholder:text-dim focus:ring-signal"
+              />
+              <PrimaryButton onClick={() => setFeedUrl(feedUrlLocal)} className="shrink-0">
+                <Tv size={14} /> Apply
+              </PrimaryButton>
+            </div>
+          ),
+        },
+      ],
+    },
     {
       title: "My playlist",
       note: "import",

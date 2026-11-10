@@ -1,7 +1,20 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { CHANNELS, type Channel, type StreamSource } from "../data";
 import { parsePlaylist } from "../playlist";
 import { customColor, loadPlaylistStore, loadProxy, loadVolume, savePlaylistStore, saveProxy, saveVolume, type StoredPlaylist } from "./model";
+import {
+  fetchFeedText,
+  feedToChannels,
+  loadFeedCache,
+  loadFeedOff,
+  loadFeedUrl,
+  parseFeedText,
+  saveFeedCache,
+  saveFeedOff,
+  saveFeedUrl,
+  type FeedEntry,
+  type FeedStatus,
+} from "./bittvFeed";
 import {
   DEFAULT_CONFIG,
   LAYOUTS,
@@ -26,8 +39,17 @@ type LiveState = {
   setActiveId: (id: string) => void;
   favs: string[];
   toggleFav: (id: string) => void;
-  /** The bundled channels plus the user's loaded playlist (if any). */
+  /** The active lineup: the BitTV feed when it is live, otherwise the bundled
+   *  channels plus the user's loaded playlist (if any). */
   channels: Channel[];
+  /** Live status of the BitTV-style feed (which lineup is showing + why). */
+  feed: FeedStatus;
+  /** Re-fetch the feed now (adopt on success, keep built-in on failure). */
+  refreshFeed: () => void;
+  /** "Always use the built-in lineup" override. */
+  setFeedOff: (off: boolean) => void;
+  /** Point the feed at a custom URL (defaults to the BitTV endpoint). */
+  setFeedUrl: (url: string) => void;
   playlistUrl: string | null;
   /** Loads an m3u/m3u8 the user legitimately holds (direct fetch,
    *  CORS-blocked files fall back to this host's /fetch relay). */
@@ -119,7 +141,105 @@ export function LiveProvider({ children }: { children: ReactNode }) {
   });
   const [store, setStore] = useState<StoredPlaylist | null>(() => loadPlaylistStore());
   const custom = useMemo(() => (store ? storedToChannels(store) : []), [store]);
-  const channels = useMemo(() => [...CHANNELS, ...custom], [custom]);
+
+  /* -------------------------------------------------- BitTV-style feed --- */
+  /* The third-party live feed replaces the built-in lineup when it is live
+     (BitTV shows only its feed); any failure falls back to the built-in list
+     plus the user's playlist so the app is never empty. */
+  const [feedUrl, setFeedUrlState] = useState<string>(() => loadFeedUrl());
+  const [feedOff, setFeedOffState] = useState<boolean>(() => loadFeedOff());
+  const [feedEntries, setFeedEntries] = useState<FeedEntry[] | null>(() => loadFeedCache()?.entries ?? null);
+  const [feedFetchedAt, setFeedFetchedAt] = useState<number | null>(() => loadFeedCache()?.fetchedAt ?? null);
+  const [feedReason, setFeedReason] = useState<string | null>(() => (loadFeedOff() ? "built-in lineup (feed disabled)" : null));
+  const [feedLoading, setFeedLoading] = useState<boolean>(false);
+  const feedChannels = useMemo(() => (feedEntries ? feedToChannels(feedEntries) : null), [feedEntries]);
+  const feedLive = !feedOff && feedEntries !== null && feedChannels !== null;
+
+  const attemptFeed = useCallback((url: string) => {
+    setFeedLoading(true);
+    void fetchFeedText(url)
+      .then((text) => {
+        if (text === null) {
+          setFeedEntries(null);
+          setFeedFetchedAt(null);
+          setFeedReason("built-in lineup (feed unreachable)");
+          saveFeedCache(null);
+          return;
+        }
+        const entries = parseFeedText(text);
+        if (!entries) {
+          setFeedEntries(null);
+          setFeedFetchedAt(null);
+          setFeedReason("built-in lineup (feed had no live channels)");
+          saveFeedCache(null);
+          return;
+        }
+        const now = Date.now();
+        setFeedEntries(entries);
+        setFeedFetchedAt(now);
+        setFeedReason(null);
+        saveFeedCache({ url, fetchedAt: now, entries });
+      })
+      .catch(() => {
+        setFeedEntries(null);
+        setFeedFetchedAt(null);
+        setFeedReason("built-in lineup (feed unreachable)");
+      })
+      .finally(() => setFeedLoading(false));
+  }, []);
+
+  /* Boot: adopt the last-good cache (already in state) then refresh in the
+     background unless the user forced the built-in lineup. */
+  const bootedFeed = useRef(false);
+  useEffect(() => {
+    if (bootedFeed.current) return;
+    bootedFeed.current = true;
+    if (!loadFeedOff()) attemptFeed(loadFeedUrl());
+  }, [attemptFeed]);
+
+  /* Keep the focused channel valid across a lineup swap. */
+  useEffect(() => {
+    if (!feedLive || !feedChannels) return;
+    if (!feedChannels.some((c) => c.id === activeId)) setActiveIdState(feedChannels[0].id);
+  }, [feedLive, feedChannels, activeId]);
+
+  const refreshFeed = useCallback(() => {
+    if (feedOff) return;
+    attemptFeed(feedUrl);
+  }, [feedOff, feedUrl, attemptFeed]);
+
+  const setFeedOff = useCallback((off: boolean) => {
+    setFeedOffState(off);
+    saveFeedOff(off);
+    if (off) setFeedReason("built-in lineup (feed disabled)");
+    else attemptFeed(loadFeedUrl());
+  }, [attemptFeed]);
+
+  const setFeedUrl = useCallback((url: string) => {
+    const clean = url.trim();
+    if (!clean) return;
+    setFeedUrlState(clean);
+    saveFeedUrl(clean);
+    attemptFeed(clean);
+  }, [attemptFeed]);
+
+  const channels = useMemo(
+    () => (feedLive && feedChannels ? feedChannels : [...CHANNELS, ...custom]),
+    [feedLive, feedChannels, custom],
+  );
+
+  const feed = useMemo<FeedStatus>(
+    () => ({
+      mode: feedLive ? "feed" : "builtin",
+      url: feedUrl,
+      fetchedAt: feedEntries ? feedFetchedAt : null,
+      reason: feedLive ? null : feedReason,
+      count: channels.length,
+      loading: feedLoading,
+      disabled: feedOff,
+    }),
+    [feedLive, feedUrl, feedEntries, feedFetchedAt, feedReason, feedLoading, channels, feedOff],
+  );
 
   useEffect(() => saveConfig(config), [config]);
   useEffect(() => saveFavs(favs), [favs]);
@@ -236,7 +356,8 @@ export function LiveProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav,
-      channels, playlistUrl: store?.url ?? null, loadPlaylist, importText, loadXtream, removePlaylist,
+      channels, feed, refreshFeed, setFeedOff, setFeedUrl,
+      playlistUrl: store?.url ?? null, loadPlaylist, importText, loadXtream, removePlaylist,
       proxy, setProxy,
       playing, setPlaying,
       muted, setMuted,
@@ -247,7 +368,8 @@ export function LiveProvider({ children }: { children: ReactNode }) {
     }),
     [
       config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav,
-      channels, store, loadPlaylist, importText, loadXtream, removePlaylist,
+      channels, feed, refreshFeed, setFeedOff, setFeedUrl,
+      store, loadPlaylist, importText, loadXtream, removePlaylist,
       proxy, setProxy,
       playing, muted, volume, sourceIdxMap, setSourceIndex, miniDismissed, isScrolledOut,
     ],
