@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>NusaTV — Live TV for Indonesia &amp; the world</title>
-<meta name="description" content="NusaTV — 164 verified live TV channels in one clean player. Watch in the browser or install the Android TV app. Free, no account, no tracking." />
+<meta name="description" content="NusaTV — 164 verified live TV channels in one clean player. Watch in the browser or install the Android TV / phone app. Free, no account, no tracking." />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2308090b'/%3E%3Ctext x='6' y='22' font-family='monospace' font-weight='700' font-size='13' fill='%23fff'%3ENU%3C/text%3E%3Crect x='19' y='9' width='8' height='8' rx='2' fill='%230e6bff'/%3E%3C/svg%3E" />
 <style>
   :root {
@@ -121,12 +121,16 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v14l11-7-11-7z"/></svg>
       Watch in browser
     </a>
-    <a class="btn ghost" href="https://github.com/ther12k/nusatv-web/releases/download/tv-v0.1.0/NusaTV-AndroidTV-v0.1.0.apk">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+    <a class="btn ghost" href="https://github.com/ther12k/nusatv-web/releases/download/tv-v0.2.0/NusaTV-AndroidTV-v0.2.0.apk">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
       Android TV APK · 7.6 MB
     </a>
+    <a class="btn ghost" href="https://github.com/ther12k/nusatv-web/releases/download/phone-v0.1.0/NusaTV-Phone-v0.1.0.apk">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg>
+      Phone APK · 6.9 MB
+    </a>
   </div>
-  <p class="fineprint">Web app: tv.rizeva.my.id · APK: debug build, sideload via file manager</p>
+  <p class="fineprint">Web app: tv.rizeva.my.id · APKs: debug builds, sideload via file manager</p>
 
   <div class="stats">
     <div class="stat"><b>164</b><span>channels</span></div>
@@ -159,7 +163,7 @@
       <div class="card">
         <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
         <h3>Remote-first TV app</h3>
-        <p>The Android TV build walks the same accordion with the D-pad: ↑↓ browse, OK collapses groups or plays, CH+/CH− zap while watching.</p>
+        <p>The Android TV build walks the same accordion with the D-pad: ↑↓ browse, OK collapses groups or plays, CH+/CH− zap while watching — and typing a number jumps straight to that channel.</p>
       </div>
       <div class="card">
         <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
@@ -170,6 +174,16 @@
         <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h10a2 2 0 0 1 2 2v12a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2z"/><path d="M16 8h4v12a2 2 0 0 1-2 2"/></svg></div>
         <h3>Bring your own playlist</h3>
         <p>Load any m3u you legitimately hold — URL, file, paste or Xtream Codes. Your list stays on your device.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.6-9.3-9A5.4 5.4 0 0 1 12 6.7 5.4 5.4 0 0 1 21.3 12C19 16.4 12 21 12 21z"/></svg></div>
+        <h3>Favorites &amp; search</h3>
+        <p>Star channels you come back to — MENU on the TV remote, a tap on the phone — and they get their own group. Search overlay finds any channel by name, on both apps.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
+        <h3>Phone-native build</h3>
+        <p>A touch UI designed for one hand — category chips, dense rows, tap the player to pause, and a "Lanjut Nonton" rail that remembers what you were watching.</p>
       </div>
     </div>
   </div>
@@ -195,17 +209,21 @@
 
 <section id="install">
   <div class="wrap">
-    <h2>Install on Android TV</h2>
-    <p class="lead">A ten-foot remote-first build of the same player — leanback launcher, D-pad everywhere, fullscreen zap.</p>
+    <h2>Install on Android TV &amp; phone</h2>
+    <p class="lead">Two builds of the same player: a ten-foot remote-first app for the TV (leanback launcher, D-pad everywhere, fullscreen zap) and a one-handed touch app for the phone.</p>
     <ol class="steps">
-      <li><h3>Download the APK</h3><p>Grab <span class="mono">NusaTV-AndroidTV-v0.1.0.apk</span> from the <a href="https://github.com/ther12k/nusatv-web/releases" style="color:var(--signal-lt)">releases page</a> onto a USB stick or download it directly on the TV's browser.</p></li>
-      <li><h3>Allow unknown apps</h3><p>Settings → Device Preferences → Security &amp; Restrictions → Unknown sources, then enable your file manager.</p></li>
-      <li><h3>Install &amp; tune</h3><p>Open the APK from the file manager, install, and launch NusaTV from the TV launcher. First channel plays on <span class="mono">OK</span>.</p></li>
+      <li><h3>Download the APK</h3><p>Grab <span class="mono">NusaTV-AndroidTV-v0.2.0.apk</span> for the TV or <span class="mono">NusaTV-Phone-v0.1.0.apk</span> for the phone from the buttons below, or the <a href="https://github.com/ther12k/nusatv-web/releases" style="color:var(--signal-lt)">releases page</a>.</p></li>
+      <li><h3>Allow unknown apps</h3><p>TV: Settings → Device Preferences → Security &amp; Restrictions → Unknown sources, then enable your file manager. Phone: allow installs from your browser or file manager when prompted.</p></li>
+      <li><h3>Install &amp; tune</h3><p>Open the APK, install, and launch NusaTV. On the TV the first channel plays on <span class="mono">OK</span>; on the phone tap any channel — favorites and history carry across updates.</p></li>
     </ol>
-    <p style="margin-top:26px">
-      <a class="btn primary" href="https://github.com/ther12k/nusatv-web/releases/download/tv-v0.1.0/NusaTV-AndroidTV-v0.1.0.apk">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download APK
+    <p style="margin-top:26px" class="btns">
+      <a class="btn primary" href="https://github.com/ther12k/nusatv-web/releases/download/tv-v0.2.0/NusaTV-AndroidTV-v0.2.0.apk">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Android TV APK · v0.2.0
+      </a>
+      <a class="btn primary" href="https://github.com/ther12k/nusatv-web/releases/download/phone-v0.1.0/NusaTV-Phone-v0.1.0.apk">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Phone APK · v0.1.0
       </a>
     </p>
   </div>
@@ -218,7 +236,7 @@
       <p class="legal">
         NusaTV is a generic player for publicly available streams; it bundles no credentials and
         impersonates no client. Channel availability depends on each broadcaster's public endpoint.
-        APK is a debug build — install at your own discretion.
+        APKs are debug builds — install at your own discretion.
       </p>
     </div>
     <div style="text-align:right">
