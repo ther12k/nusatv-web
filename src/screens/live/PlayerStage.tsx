@@ -39,6 +39,9 @@ type Props = {
   hideDelayMs?: number;
   /** Master volume 0..1 (shared with the floating mini-player). */
   volume?: number;
+  /** Pause the stage while another surface (the floating mini-player)
+   *  carries playback — never two decoding videos at once. */
+  suspended?: boolean;
   sourceIndex?: number;
   onSourceChange?: (index: number) => void;
 };
@@ -60,6 +63,7 @@ export default function PlayerStage({
   proxy = false,
   hideDelayMs = 5000,
   volume = 1,
+  suspended = false,
   sourceIndex = 0,
   onSourceChange,
 }: Props) {
@@ -178,14 +182,16 @@ export default function PlayerStage({
   const activeSource = sources[safeSourceIndex] ?? sources[0]!;
   const activeUrl = activeSource.url;
   const activeRelay = activeSource.relay ?? false;
-  const exhaustedRef = useRef(false);
+  /** Failover ledger: source URLs already attempted since the last
+   *  successful fragment — survives source switches so a fully-dead
+   *  channel stops cycling instead of looping forever. */
+  const attemptedRef = useRef<Set<string>>(new Set());
 
   // REAL playback: hls.js attaches the broadcaster's own HLS endpoint
   // (or direct MP4/video for VOD) to the video element.
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    exhaustedRef.current = false;
     setStreamLive(false);
     setStreamError(null);
 
@@ -199,6 +205,7 @@ export default function PlayerStage({
         setStreamError(null);
       };
       const onErr = () => {
+        setStreamLive(false);
         setStreamError("Failed to load VOD media");
       };
       video.addEventListener("loadeddata", onLoaded);
@@ -214,37 +221,45 @@ export default function PlayerStage({
     hls.loadSource(targetUrl);
     hls.attachMedia(video);
     hls.on(Hls.Events.FRAG_LOADED, () => {
-      exhaustedRef.current = false;
-      setStreamLive(true);
+      // A downloaded fragment is not a rendered frame — streamLive waits
+      // for the video element's own playing/loadeddata events. Success
+      // here only clears the failover ledger.
+      attemptedRef.current.clear();
       setStreamError(null);
       video.removeAttribute("data-hls-error");
     });
     hls.on(Hls.Events.ERROR, (_e, data) => {
       if (!data.fatal) return;
-      // Cycle to the next mirror at most once around; after every source has
-      // failed, stop retrying (they will all keep failing) and surface it.
-      if (sources.length > 1 && onSourceChange && !exhaustedRef.current) {
-        exhaustedRef.current = true;
+      // Failover: try each remaining mirror once; only after EVERY source
+      // has failed in this pass do we stop and surface the error (the
+      // ledger survives source switches, so A→B→A cycling cannot loop).
+      attemptedRef.current.add(activeUrl);
+      const nextIdx = sources.findIndex((s, i) => i !== safeSourceIndex && !attemptedRef.current.has(s.url));
+      if (nextIdx >= 0 && onSourceChange) {
         console.warn(`HLS error on ${activeSource.label}, auto-switching server...`);
-        onSourceChange((safeSourceIndex + 1) % sources.length);
+        onSourceChange(nextIdx);
       } else {
-        video.setAttribute("data-hls-error", data.details);
+        setStreamLive(false);
         setStreamError(data.details);
+        video.setAttribute("data-hls-error", data.details);
       }
     });
     return () => {
       hls.destroy();
     };
-  }, [activeUrl, activeRelay, proxy, ch.id, safeSourceIndex, sources.length, onSourceChange, activeSource.label]);
+  }, [activeUrl, activeRelay, proxy, ch.id, safeSourceIndex, sources, onSourceChange, activeSource.label]);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     video.muted = muted;
     video.volume = volume;
-    if (playing) void video.play().catch(() => {/* autoplay block — poster shows */});
+    // While scrolled out the floating mini-player carries playback — the
+    // stage pauses so two videos never decode (and never mix audio).
+    const active = playing && !suspended;
+    if (active) void video.play().catch(() => {/* autoplay block — poster shows */});
     else video.pause();
-  }, [playing, muted, volume, activeUrl]);
+  }, [playing, suspended, muted, volume, activeUrl]);
 
   useEffect(() => {
     setTuning(true);

@@ -14,7 +14,7 @@ import LayoutPanel from "./live/LayoutPanel";
 type Props = { now: Date };
 
 export default function Live({ now }: Props) {
-  const { config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav, channels, proxy, playing, setPlaying, muted, setMuted, volume, sourceIdxMap, setSourceIndex: setCtxSourceIdx, setMiniDismissed, setScrolledOut } = useLive();
+  const { config, patch, applyPreset, reset, activeId, setActiveId, favs, toggleFav, channels, proxy, playing, setPlaying, muted, setMuted, volume, sourceIdxMap, setSourceIndex: setCtxSourceIdx, setMiniDismissed, isScrolledOut, setScrolledOut } = useLive();
   const [cat, setCat] = useState<string>("All");
   useEffect(() => {
     setMiniDismissed(false);
@@ -55,16 +55,28 @@ export default function Live({ now }: Props) {
         c.now.toLowerCase().includes(term) ||
         String(c.num).includes(term);
       // Online-only: the server probe said offline → hide. Never-probed
-      // channels (no entry yet) stay visible.
+      // channels (no entry yet) stay visible, and STALE probes (>20 min)
+      // count as unknown too — a recovered channel must not stay hidden.
+      const s = statusMap[c.id];
+      const stale = !!s && Date.now() - s.lastChecked > 20 * 60_000;
       const okSignal =
-        !config.hideOffline || statusMap[c.id]?.status !== "offline";
+        !config.hideOffline || !s || stale || s.status !== "offline";
       return okCat && okQ && okSignal;
     });
   }, [cat, query, favs, config.hideOffline, statusMap, channels]);
 
   const cats = [...CATS, ...[...new Set(channels.map((c) => c.cat))].filter((g) => !(CATS as readonly string[]).includes(g))];
   const ch = channels.find((c) => c.id === activeId) ?? channels[0];
-  const sources = ch.sources && ch.sources.length > 0 ? ch.sources : [{ label: "Server 1", url: ch.src }];
+  // Stable identity per channel: a fresh array every render would change
+  // setSourceIndex → PlayerStage's effect deps → HLS restarts mid-stream
+  // on unrelated renders (the clock tick included).
+  const sources = useMemo(
+    () =>
+      ch.sources && ch.sources.length > 0
+        ? ch.sources
+        : [{ label: "Server 1", url: ch.src, relay: ch.relay }],
+    [ch],
+  );
   const currentSourceIndex = sourceIdxMap[ch.id] ?? 0;
 
   const setSourceIndex = useCallback((idx: number) => {
@@ -286,6 +298,7 @@ export default function Live({ now }: Props) {
       proxy={proxy}
       hideDelayMs={config.chromeHideDelayMs}
       volume={volume}
+      suspended={isScrolledOut}
       ch={ch}
       sourceIndex={currentSourceIndex}
       onSourceChange={setSourceIndex}

@@ -200,18 +200,18 @@ export default function FloatingMiniPlayer({
               {playing ? <Pause size={13} fill="currentColor" /> : <Play size={13} fill="currentColor" className="ml-0.5" />}
             </button>
 
-            <button
-              onClick={onToggleMute}
-              className="flex h-6 w-6 items-center justify-center rounded bg-black/60 text-white/80 hover:text-white backdrop-blur transition"
-              aria-label={muted ? "Unmute" : "Mute"}
-            >
-              {muted || volume === 0 ? <VolumeX size={13} /> : <Volume2 size={13} />}
-            </button>
-
-            {/* Volume slider — drag to set the level (shared with the main
-             *  stage and remembered across reloads). Sliding while muted
-             *  unmutes; zero reads as muted. */}
-            <div className="group/vol relative flex items-center">
+            {/* Mute + volume: ONE hover group so the speaker icon is the
+             *  real hit-area that reveals the slider (a zero-width-only
+             *  wrapper was unreachable). Sliding while muted unmutes. */}
+            <div className="group/vol relative flex items-center gap-1.5">
+              <button
+                onClick={onToggleMute}
+                className="flex h-6 w-6 items-center justify-center rounded bg-black/60 text-white/80 hover:text-white backdrop-blur transition"
+                aria-label={muted ? "Unmute" : "Mute"}
+                aria-valuetext={`${Math.round(volume * 100)}%`}
+              >
+                {muted || volume === 0 ? <VolumeX size={13} /> : <Volume2 size={13} />}
+              </button>
               <input
                 type="range"
                 min={0}
